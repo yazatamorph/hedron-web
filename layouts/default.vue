@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar elevation="1" dense fixed app>
+    <v-app-bar class="grey darken-3" elevation="1" dark dense fixed app>
       <v-app-bar-nav-icon
         ><v-icon>mdi-cards-diamond</v-icon></v-app-bar-nav-icon
       >
