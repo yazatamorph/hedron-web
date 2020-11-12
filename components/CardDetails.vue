@@ -51,7 +51,7 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-divider></v-divider>
+            <v-divider class="elevation-1"></v-divider>
             <!-- <v-card-title class="heading">Printings!</v-card-title>
             <v-card-text>
               I've got a lovely bunch of coconuts, here they are all standing in
