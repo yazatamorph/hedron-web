@@ -1,18 +1,13 @@
 <template>
   <v-app>
     <v-app-bar class="grey darken-3" elevation="1" dark fixed app>
-      <!-- <v-app-bar-nav-icon class="d-none d-sm-none d-md-flex">
-        <v-icon>mdi-cards-diamond</v-icon>
-      </v-app-bar-nav-icon>
-      <v-toolbar-title class="d-none d-sm-none d-md-flex" v-text="title" />
-      <v-spacer class="d-none d-sm-none d-md-flex" /> -->
       <v-text-field
         v-model="appBarSearch"
         label="Search the Archive..."
         clearable
         clear-icon="mdi-trash-can-outline"
-        hide-details
         single-line
+        hide-details
       >
         <template v-slot:prepend>
           <v-icon class="d-flex">mdi-cards-diamond</v-icon>

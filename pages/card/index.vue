@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <div>
     <CardDetails />
-  </v-container>
+  </div>
 </template>
 
 <script>
