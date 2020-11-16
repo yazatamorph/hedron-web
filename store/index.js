@@ -10,11 +10,11 @@ export const state = () => ({
 
 export const getters = {
   user: (state) => state.user,
-  auth: (state) => state.auth,
-  email: (state) => state.email,
-  guid: (state) => state.guid,
-  preferences: (state) => state.preferences,
-  screenName: (state) => state.screenName,
+  auth: (state) => state.user.auth,
+  email: (state) => state.user.email,
+  guid: (state) => state.user.guid,
+  preferences: (state) => state.user.preferences,
+  screenName: (state) => state.user.screenName,
 };
 
 export const actions = {};

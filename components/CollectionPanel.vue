@@ -1,6 +1,6 @@
 <template>
   <v-row class="mt-md-4 justify-center" no-gutters>
-    <v-col cols="12" md="10" md-offset="1">
+    <v-col cols="12" md="11" md-offset="1">
       <v-card outlined>
         <v-container>
           <v-row no-gutters>

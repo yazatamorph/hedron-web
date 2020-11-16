@@ -1,6 +1,6 @@
 <template>
   <v-row class="mb-md-6 justify-center" no-gutters>
-    <v-col cols="12" sm="6" md="3" md-offset="3">
+    <v-col cols="12" sm="6" md="4" md-offset="3">
       <v-hover>
         <template v-slot:default="{ hover }">
           <v-img
@@ -11,9 +11,9 @@
         </template>
       </v-hover>
     </v-col>
-    <v-col cols="12" sm="6" sm-offset="6" md="4" md-offset="6">
+    <v-col cols="12" sm="6" sm-offset="6" md="4" md-offset="7">
       <v-sheet class="my-md-n4 ml-md-n4 py-md-4 pl-md-4 rounded" outlined>
-        <v-card-title class="heading">Card Name</v-card-title>
+        <v-card-title class="heading">{{ cardName }}</v-card-title>
         <v-card-text>
           I've got a lovely bunch of coconuts, here they are all standing in a
           row. Lorem ipsum lasciate ogne speranza voi ch'intrate. I've got a
@@ -73,19 +73,27 @@ export default {
   name: 'CardDetails',
   data() {
     return {
-      setName: 'Masters 25',
-      setNameAbbreviation: 'A25',
-      printingNumber: '50',
-      printingRarity: 'Common',
-      printingLanguage: 'English',
+      // setName: 'Masters 25',
+      // setNameAbbreviation: 'A25',
+      // printingNumber: '50',
+      // printingRarity: 'Common',
+      // printingLanguage: 'English',
       setSymbol:
         'https://c2.scryfall.com/file/scryfall-symbols/sets/a25.svg?1604898000',
-      cardImage:
-        'https://c1.scryfall.com/file/scryfall-cards/png/front/c/c/cca8eb95-d071-46a4-885c-3da25b401806.png?1562441143',
+      // cardImage:
+      //   'https://c1.scryfall.com/file/scryfall-cards/png/front/c/c/cca8eb95-d071-46a4-885c-3da25b401806.png?1562441143',
     };
   },
   computed: {
-    ...mapGetters(['collection/allCards']),
+    ...mapGetters('cards', [
+      'cardImage',
+      'cardName',
+      'printingLanguage',
+      'printingRarity',
+      'printingNumber',
+      'setNameAbbreviation',
+      'setName',
+    ]),
   },
   methods: {
     makeSetString() {
