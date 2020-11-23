@@ -27,8 +27,15 @@ export default {
       card: (state) => state.card,
     }),
   },
+  created() {
+    this.indexInCollection({
+      set: this.$route.params.set,
+      num: this.$route.params.number,
+    });
+  },
   methods: {
     ...mapActions('cards', ['queryCard']),
+    ...mapActions('collection', ['indexInCollection']),
   },
   fetchOnServer: false,
 };
