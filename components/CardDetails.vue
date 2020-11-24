@@ -73,15 +73,8 @@ export default {
   name: 'CardDetails',
   data() {
     return {
-      // setName: 'Masters 25',
-      // setNameAbbreviation: 'A25',
-      // printingNumber: '50',
-      // printingRarity: 'Common',
-      // printingLanguage: 'English',
       setSymbol:
         'https://c2.scryfall.com/file/scryfall-symbols/sets/a25.svg?1604898000',
-      // cardImage:
-      //   'https://c1.scryfall.com/file/scryfall-cards/png/front/c/c/cca8eb95-d071-46a4-885c-3da25b401806.png?1562441143',
     };
   },
   computed: {

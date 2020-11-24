@@ -9,6 +9,10 @@ export const getters = {
 };
 
 export const actions = {
+  changeComments({ commit }, text) {
+    commit('COMMENT_SUBMIT', text);
+  },
+
   changeQuantity({ commit }, { con, op }) {
     if (op === 'add') {
       commit('QUANTITY_INCREMENT', con);
@@ -59,6 +63,11 @@ export const actions = {
           mp: 0,
           hp: 0,
           dmg: 0,
+          nmf: 0,
+          lpf: 0,
+          mpf: 0,
+          hpf: 0,
+          dmgf: 0,
         },
         tags: [],
         comments: '',
@@ -101,6 +110,9 @@ export const actions = {
 export const mutations = {
   ADD_TO_COLLECTION(state, update) {
     state.cards.push({ ...update, updated: new Date() });
+  },
+  COMMENT_SUBMIT(state, text) {
+    state.cards[state.cardIndex].comments = text;
   },
   QUANTITY_DECREMENT(state, con) {
     if (state.cards[state.cardIndex].condition[con] > 0) {
