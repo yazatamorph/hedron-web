@@ -68,6 +68,7 @@
                     placeholder="Enter comments..."
                     @click:clear="handleCommentsClear"
                     @blur="handleCommentsInput"
+                    @keyup="debounceComments"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -89,7 +90,7 @@
                     :value="card.condition[condition(con)]"
                     :rules="[rules.quantity]"
                     outlined
-                    :disabled="!card.own"
+                    readonly
                     label="Quantity"
                     class="mb-n2"
                   >
@@ -118,6 +119,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import debounce from 'lodash/debounce';
 
 export default {
   name: 'CollectionPanel',
@@ -168,6 +170,7 @@ export default {
           'Quantity must be a positive number!',
       },
       tagInput: '',
+      debounceComments: debounce(this.handleCommentsInput, 800),
     };
   },
   computed: {
@@ -199,7 +202,7 @@ export default {
     },
 
     handleCommentsInput(e) {
-      if (e.target.value === '' && this.card.comments === '') {
+      if (e.target.value === this.card.comments) {
         return;
       }
       this.changeComments({ cID: this.cardId, text: e.target.value });
