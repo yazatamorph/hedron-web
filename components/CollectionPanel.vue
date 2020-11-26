@@ -61,7 +61,7 @@
                     >Comments</v-card-subtitle
                   >
                   <v-textarea
-                    v-model="commentInput"
+                    :value="card.comments"
                     outlined
                     clearable
                     class="mx-4"
@@ -198,13 +198,16 @@ export default {
       return Object.keys(con)[0];
     },
 
-    handleCommentsInput() {
-      this.changeComments({ cID: this.cardId, text: this.commentInput });
+    handleCommentsInput(e) {
+      if (e.target.value === '' && this.card.comments === '') {
+        return;
+      }
+      this.changeComments({ cID: this.cardId, text: e.target.value });
     },
 
-    handleCommentsClear() {
-      this.commentInput = '';
-      this.changeComments({ cID: this.cardId, text: this.commentInput });
+    handleCommentsClear(e) {
+      e.target.value = '';
+      this.changeComments({ cID: this.cardId, text: e.target.value });
     },
 
     handleOwn() {
