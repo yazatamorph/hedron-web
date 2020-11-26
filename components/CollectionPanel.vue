@@ -6,28 +6,26 @@
           <v-row no-gutters>
             <v-col cols="12" class="d-flex flex-nowrap">
               <v-switch
-                :value="owned"
-                :input-value="cards[cardIndex].own"
+                :value="card.own"
                 inset
                 class="font-weight-bold ml-5"
                 color="teal accent-4"
                 label="Owned"
-                @change="changeSwitch('own', $event !== null)"
+                @change="handleOwn"
               ></v-switch>
               <v-switch
-                value="false"
-                :input-value="cards[cardIndex].wish"
+                :value="card.wish"
                 inset
                 class="font-weight-bold ml-5"
                 color="cyan accent-4"
                 label="Wishlist"
-                @click="changeSwitch('wish', $event !== null)"
+                @change="handleWish"
               ></v-switch>
             </v-col>
           </v-row>
           <!-- end upper section -->
           <v-expand-transition>
-            <div v-show="owned" height="100" width="100" class="mx-auto">
+            <div v-show="card.own" height="100" width="100" class="mx-auto">
               <!-- begin lower section -->
               <!-- begin tags, comments, etc. -->
               <v-row class="mt-n6 mb-n10">
@@ -40,18 +38,18 @@
                     outlined
                     class="ml-4"
                     placeholder="Enter tags..."
-                    @keydown.enter="submitTag"
+                    @keydown.enter="handleSubmitTag"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="8"
                   ><v-container class="d-flex flex-wrap align-left mr-4">
                     <v-chip
-                      v-for="(tag, index) in cards[cardIndex].tags"
+                      v-for="(tag, index) in card.tags"
                       :key="`tagKey${index}`"
                       label
                       close
                       class="ma-1"
-                      @click:close="removeTag(index)"
+                      @click:close="handleRemoveTag(index)"
                       >{{ tag }}</v-chip
                     >
                   </v-container></v-col
@@ -68,8 +66,8 @@
                     clearable
                     class="mx-4"
                     placeholder="Enter comments..."
-                    @click:clear="removeComments"
-                    @blur="submitComments"
+                    @click:clear="handleCommentsClear"
+                    @blur="handleCommentsInput"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -88,20 +86,20 @@
                   }}</v-card-subtitle>
 
                   <v-text-field
-                    :value="cards[cardIndex].condition[condition(con)]"
+                    :value="card.condition[condition(con)]"
                     :rules="[rules.quantity]"
                     outlined
-                    :disabled="!cards[cardIndex].own"
+                    :disabled="!card.own"
                     label="Quantity"
                     class="mb-n2"
                   >
                     <template v-slot:prepend>
-                      <v-icon @click="quantity(con, 'add')"
+                      <v-icon @click="handleQuantity(con, 'add')"
                         >mdi-plus-circle</v-icon
                       >
                     </template>
                     <template v-slot:append-outer>
-                      <v-icon @click="quantity(con, 'subtract')"
+                      <v-icon @click="handleQuantity(con, 'subtract')"
                         >mdi-minus-circle</v-icon
                       >
                     </template>
@@ -123,8 +121,33 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'CollectionPanel',
+  props: {
+    cardId: { type: String, required: true, default: '' },
+    num: { type: String, required: true, default: '' },
+    setAbbr: { type: String, required: true, default: '' },
+  },
   data() {
     return {
+      cardInit: {
+        set: this.setAbbr,
+        num: this.num,
+        own: false,
+        wish: false,
+        condition: {
+          nm: 0,
+          lp: 0,
+          mp: 0,
+          hp: 0,
+          dmg: 0,
+          nmf: 0,
+          lpf: 0,
+          mpf: 0,
+          hpf: 0,
+          dmgf: 0,
+        },
+        tags: [],
+        comments: '',
+      },
       commentInput: '',
       conditionMap: [
         { nm: 'Near Mint' },
@@ -138,7 +161,6 @@ export default {
         { dmg: 'Damaged' },
         { dmgf: 'Damaged Foil' },
       ],
-      owned: false,
       rules: {
         quantity: (value) =>
           (Number.isInteger(parseInt(value)) && parseInt(value) >= 0) ||
@@ -151,54 +173,61 @@ export default {
   computed: {
     ...mapState('collection', {
       cards: (state) => state.cards,
-      cardIndex: (state) => state.cardIndex,
+      card(state) {
+        if (!state.cards[this.cardId]) {
+          return this.cardInit;
+        }
+        return state.cards[this.cardId];
+      },
     }),
-  },
-  mounted() {
-    this.commentInput = this.cards[this.cardIndex].comments;
   },
   methods: {
     ...mapActions('collection', [
       'changeComments',
+      'changeOwn',
       'changeQuantity',
       'changeTags',
+      'changeWish',
       'enterInCollection',
     ]),
-    changeSwitch(which, value) {
-      const card = {};
-      Object.assign(card, this.cards[this.cardIndex], { updated: new Date() });
-      card[which] = value;
 
-      this.enterInCollection(card);
-      if (which === 'own') {
-        this.owned = value;
-      }
-    },
     condition(con, long) {
       if (long) {
         return Object.values(con)[0];
       }
       return Object.keys(con)[0];
     },
-    quantity(con, op) {
-      this.changeQuantity({ con: this.condition(con), op });
+
+    handleCommentsInput() {
+      this.changeComments({ cID: this.cardId, text: this.commentInput });
     },
-    removeComments() {
-      this.changeComments('');
+
+    handleCommentsClear() {
+      this.commentInput = '';
+      this.changeComments({ cID: this.cardId, text: this.commentInput });
     },
-    removeTag(index) {
-      const update = { op: 'delete', tag: index };
-      this.changeTags(update);
+
+    handleOwn() {
+      this.changeOwn({ cID: this.cardId, cardData: this.card });
     },
-    submitComments() {
-      this.changeComments(this.commentInput);
+
+    handleQuantity(con, op) {
+      this.changeQuantity({ cID: this.cardId, con: this.condition(con), op });
     },
-    submitTag() {
-      if (!this.cards[this.cardIndex].tags.includes(this.tagInput)) {
-        const update = { op: 'submit', tag: this.tagInput };
-        this.changeTags(update);
+
+    handleRemoveTag(index) {
+      this.changeTags({ cID: this.cardId, op: 'delete', tag: index });
+    },
+
+    handleSubmitTag() {
+      if (!this.card.tags.includes(this.tagInput)) {
+        this.changeTags({ cID: this.cardId, op: 'submit', tag: this.tagInput });
       }
       this.tagInput = '';
+    },
+
+    handleWish() {
+      this.changeWish({ cID: this.cardId, cardData: this.card });
     },
   },
 };

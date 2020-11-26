@@ -1,7 +1,11 @@
 <template>
   <v-container>
     <CardDetails />
-    <CollectionPanel />
+    <CollectionPanel
+      :card-id="cID"
+      :set-abbr="$route.params.set.toUpperCase()"
+      :num="$route.params.number.toLowerCase()"
+    />
   </v-container>
 </template>
 
@@ -22,20 +26,18 @@ export default {
     };
     await this.queryCard(query);
   },
+  data() {
+    return {
+      cID: `${this.$route.params.set.toUpperCase()}${this.$route.params.number.toLowerCase()}`,
+    };
+  },
   computed: {
     ...mapState('cards', {
       card: (state) => state.card,
     }),
   },
-  created() {
-    this.indexInCollection({
-      set: this.$route.params.set,
-      num: this.$route.params.number,
-    });
-  },
   methods: {
     ...mapActions('cards', ['queryCard']),
-    ...mapActions('collection', ['indexInCollection']),
   },
   fetchOnServer: false,
 };
