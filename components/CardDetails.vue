@@ -1,15 +1,7 @@
 <template>
   <v-row class="mb-md-6 justify-center" no-gutters>
     <v-col cols="12" sm="6" md="4" md-offset="3">
-      <v-hover>
-        <template v-slot:default="{ hover }">
-          <v-img
-            class="rounded-card transition-swing"
-            :class="`elevation-${hover ? 24 : 10}`"
-            :src="cardImage"
-          ></v-img>
-        </template>
-      </v-hover>
+      <CardImage :image-source="cardImage" />
     </v-col>
     <v-col cols="12" sm="6" sm-offset="6" md="4" md-offset="7">
       <v-sheet class="my-md-n4 ml-md-n4 py-md-4 pl-md-4 rounded" outlined>
@@ -68,9 +60,13 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import CardImage from './CardImage';
 
 export default {
   name: 'CardDetails',
+  components: {
+    CardImage,
+  },
   data() {
     return {
       setSymbol:
@@ -98,12 +94,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.rounded-card {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 4.75% / 3.5%;
-}
-</style>
