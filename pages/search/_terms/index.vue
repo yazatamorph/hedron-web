@@ -1,34 +1,91 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title
-        >Showing results 1 - 12 for search:&nbsp;
-        <strong>{{ $route.params.terms }}</strong></v-card-title
-      >
-    </v-card>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title
+            >Showing results for search:&nbsp;
+            <strong>{{ $route.params.terms }}</strong></v-card-title
+          >
+        </v-card>
+      </v-col>
+    </v-row>
     <v-row class="d-flex flex-wrap justify-space-around">
-      <v-col v-for="i in 12" :key="`imgKey${i}`" rows="12" sm="4" md="3">
-        <CardImage
-          image-source="https://c1.scryfall.com/file/scryfall-cards/large/front/c/2/c2e8b424-0cec-490e-a571-bd051f952adf.jpg?1599708487"
-        />
+      <v-col
+        v-for="(result, index) in results"
+        :key="`searchResultKey${index}`"
+        rows="12"
+        sm="4"
+        md="3"
+      >
+        <!-- I don't feel totally confident this link will work as expected lol -->
+        <nuxt-link :to="`/card/${result.set}/${result.collector_number}`">
+          <CardImage
+            :image-source="result.image_uris.png"
+            :alt-text="`${result.name} (${result.set.toUpperCase()} #${
+              result.collector_number
+            })`"
+          />
+        </nuxt-link>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          :class="totalPages > 1 ? 'd-flex' : 'd-none'"
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import CardImage from '../../../components/CardImage';
+import CardImage from '~/components/CardImage';
+import parseTerms from '~/assets/parseTerms';
 
 export default {
   components: {
     CardImage,
   },
   async fetch() {
-    const query = {
-      terms: this.$route.params.terms,
+    await this.handleSearch();
+  },
+  data() {
+    return {
+      results: [],
+      currentPage: 1,
+      totalPages: 1,
     };
-    await query;
-    // await this.queryCard(query);
+  },
+  methods: {
+    async handleSearch() {
+      try {
+        const query = {
+          terms: parseTerms(this.$route.params.terms),
+          page: this.currentPage,
+        };
+
+        const data = await this.$axios.$post(
+          'http://localhost:3420/api/query/search',
+          {
+            query,
+          }
+        );
+
+        const { results = [], totalPages = 1, currentPage = 1 } = data;
+
+        this.results = results;
+        this.totalPages = totalPages;
+
+        if (this.currentPage !== currentPage) {
+          this.currentPage = currentPage;
+        }
+      } catch (err) {
+        console.error('Problem getting search results!', err);
+      }
+    },
   },
 };
 </script>

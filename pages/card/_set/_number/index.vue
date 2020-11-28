@@ -11,8 +11,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import CardDetails from '../../../../components/CardDetails';
-import CollectionPanel from '../../../../components/CollectionPanel';
+import CardDetails from '~/components/CardDetails';
+import CollectionPanel from '~/components/CollectionPanel';
 
 export default {
   components: {

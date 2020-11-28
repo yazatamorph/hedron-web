@@ -5,6 +5,7 @@
         class="rounded-card transition-swing"
         :class="`elevation-${hover ? 24 : 10}`"
         :src="imageSource"
+        :alt="altText"
       ></v-img>
     </template>
   </v-hover>
@@ -15,6 +16,7 @@ export default {
   name: 'CardImage',
   props: {
     imageSource: { type: String, required: true, default: '' },
+    altText: { type: String, required: true, default: '' },
   },
 };
 </script>

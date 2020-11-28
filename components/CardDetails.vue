@@ -1,7 +1,7 @@
 <template>
   <v-row class="mb-md-6 justify-center" no-gutters>
     <v-col cols="12" sm="6" md="4" md-offset="3">
-      <CardImage :image-source="cardImage" />
+      <CardImage :image-source="cardImage" :alt-text="makeImgAlt()" />
     </v-col>
     <v-col cols="12" sm="6" sm-offset="6" md="4" md-offset="7">
       <v-sheet class="my-md-n4 ml-md-n4 py-md-4 pl-md-4 rounded" outlined>
@@ -85,6 +85,9 @@ export default {
     ]),
   },
   methods: {
+    makeImgAlt() {
+      return `${this.cardName} (${this.setNameAbbreviation} #${this.printingNumber})`;
+    },
     makeSetString() {
       return `${this.setName} (${this.setNameAbbreviation})`;
     },
