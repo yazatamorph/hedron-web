@@ -1,34 +1,38 @@
-import _ from 'lodash';
+/* eslint-disable camelcase */
+const _ = require('lodash');
 
-export default (searchString) => {
+const parseTerms = (searchString) => {
   const terms = {};
   const destring = (regex) => {
     return _.words(searchString, regex);
   };
 
-  const name = destring(/\w+|"[\w\s]*"/g);
+  const name = destring(/(?<=^|\s)\b\w+\b(?![:"])|(?<=(^|\s)")[\w\s]+\b(?=")/g);
   if (name) terms.name = name;
 
-  // these output arrays, eg ['s:term', 'set:term'] - need to remove prefixes
-  const set = destring(/s:\w+|set:\w+|s:"[\w\s]*"|set:"[\w\s]*"/g);
+  const set = destring(
+    /(?<=(^|\s)(s|set):)\w+|(?<=(^|\s)(s|set):")[\w\s]*(?=")/g
+  );
   if (set) {
     terms.set = set;
     terms.set_name = set;
   }
 
-  const type_line = destring(/t:\w+|type:\w+|t:"[\w\s]*"|type:"[\w\s]*"/g);
+  const type_line = destring(
+    /(?<=(^|\s)(t|type):)\w+|(?<=(^|\s)(t|type):")[\w\s]*(?=")/g
+  );
   if (type_line) terms.type_line = type_line;
 
   const artist = destring(
-    /a:\w+|art:\w+|artist:\w+|a:"[\w\s]*"|art:"[\w\s]*"|artist:"[\w\s]*"/g
+    /(?<=(^|\s)(a|art|artist):)\w+|(?<=(^|\s)(a|art|artist):")[\w\s]*(?=")/g
   );
   if (artist) terms.artist = artist;
 
-  const tags = destring(/#\w+|#"[\w\s]*"/g);
+  const tags = destring(/(?<=(^|\s)#)\w+|(?<=(^|\s)#")[\w\s]*(?=")/g);
   if (tags) terms.tags = tags;
 
   console.log('Term output:', terms);
   return terms;
 };
 
-// const exampleRegex = /\w+:\w+|\w+:"[\w\s]*"/g;
+module.exports = parseTerms;
