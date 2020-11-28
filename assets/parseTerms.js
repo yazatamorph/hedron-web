@@ -1,4 +1,8 @@
 /* eslint-disable camelcase */
+// This file needs to be moved to the server
+// because some of the regex features it relies upon
+// aren't compatible with all browsers. Thus,
+// it's safer to run in the 'universal' Node backend.
 const _ = require('lodash');
 
 const parseTerms = (searchString) => {
@@ -31,7 +35,6 @@ const parseTerms = (searchString) => {
   const tags = destring(/(?<=(^|\s)#)\w+|(?<=(^|\s)#")[\w\s]*(?=")/g);
   if (tags) terms.tags = tags;
 
-  console.log('Term output:', terms);
   return terms;
 };
 
