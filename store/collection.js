@@ -5,6 +5,8 @@ export const state = () => ({
   cards: {},
   updated: '',
   cardInit: {
+    set: '',
+    collector_number: '',
     own: false,
     wish: false,
     condition: {
@@ -45,7 +47,6 @@ export const actions = {
     if (!state.cards[cID]) {
       dispatch('addToCollection', { cID, cardData, op: 'own' });
     } else {
-      console.log('Update is after adding?');
       commit('OWN_SWITCH', cID);
       commit('UPDATE_TIMESTAMP', cID);
     }

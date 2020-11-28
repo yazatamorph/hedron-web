@@ -132,7 +132,7 @@ export default {
     return {
       cardInit: {
         set: this.setAbbr,
-        num: this.num,
+        collector_number: this.num,
         own: false,
         wish: false,
         condition: {

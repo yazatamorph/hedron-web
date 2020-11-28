@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title
             >Showing results for search:&nbsp;
-            <strong>{{ $route.params.terms }}</strong></v-card-title
+            <strong>{{ parsedSearchString }}</strong></v-card-title
           >
         </v-card>
       </v-col>
@@ -18,7 +18,6 @@
         sm="4"
         md="3"
       >
-        <!-- I don't feel totally confident this link will work as expected lol -->
         <nuxt-link :to="`/card/${result.set}/${result.collector_number}`">
           <CardImage
             :image-source="result.image_uris.png"
@@ -42,6 +41,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CardImage from '~/components/CardImage';
 import parseTerms from '~/assets/parseTerms';
 
@@ -57,13 +57,41 @@ export default {
       results: [],
       currentPage: 1,
       totalPages: 1,
+      parsedSearchString: '',
     };
+  },
+  computed: {
+    ...mapState('collection', {
+      collectionCards: (state) => state.cards,
+    }),
   },
   methods: {
     async handleSearch() {
       try {
+        const terms = parseTerms(this.$route.params.terms);
+        // TODO: write a function to stringify the 'terms' object
+        this.parsedSearchString = terms;
+
+        // This block checks collection store for cards with matching tags.
+        // If it finds matches, it returns the matches' set & number to be
+        // part of the MongoDB search query.
+        if (terms.tags) {
+          const matchingCards = Object.values(this.collectionCards)
+            .filter(({ tags }) => terms.tags.every((tag) => tags.includes(tag)))
+            // eslint-disable-next-line camelcase
+            .map(({ set, collector_number }) => {
+              return { set, collector_number };
+            });
+
+          if (matchingCards && matchingCards.length) {
+            terms.tags = matchingCards;
+          } else {
+            delete terms.tags;
+          }
+        }
+
         const query = {
-          terms: parseTerms(this.$route.params.terms),
+          terms,
           page: this.currentPage,
         };
 
