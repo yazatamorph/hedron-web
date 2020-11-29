@@ -131,7 +131,7 @@ export default {
   data() {
     return {
       cardInit: {
-        set: this.setAbbr,
+        set: this.setAbbr.toLowerCase(),
         collector_number: this.num,
         own: false,
         wish: false,

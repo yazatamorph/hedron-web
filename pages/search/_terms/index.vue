@@ -70,23 +70,26 @@ export default {
       try {
         const terms = parseTerms(this.$route.params.terms);
         // TODO: write a function to stringify the 'terms' object
-        this.parsedSearchString = terms;
+        this.parsedSearchString = terms.toString();
 
         // This block checks collection store for cards with matching tags.
         // If it finds matches, it returns the matches' set & number to be
         // part of the MongoDB search query.
         if (terms.tags) {
+          console.log('Print state:', this.collectionCards);
           const matchingCards = Object.values(this.collectionCards)
             .filter(({ tags }) => terms.tags.every((tag) => tags.includes(tag)))
             // eslint-disable-next-line camelcase
             .map(({ set, collector_number }) => {
               return { set, collector_number };
             });
-
+          console.log('Print matches:', matchingCards);
           if (matchingCards && matchingCards.length) {
             terms.tags = matchingCards;
           } else {
-            delete terms.tags;
+            // TODO: this is a placeholder - need to delay searching until vuex-persist loads store
+            terms.tags = [{ set: 'gtc', collector_number: '152' }];
+            // delete terms.tags;
           }
         }
 
@@ -98,7 +101,7 @@ export default {
         const data = await this.$axios.$post(
           'http://localhost:3420/api/query/search',
           {
-            query,
+            ...query,
           }
         );
 
