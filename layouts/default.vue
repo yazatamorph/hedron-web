@@ -28,6 +28,7 @@
 
 <script>
 export default {
+  middleware: 'storeRestored',
   data() {
     return {
       fixed: false,

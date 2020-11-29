@@ -6,7 +6,7 @@
           <v-row no-gutters>
             <v-col cols="12" class="d-flex flex-nowrap">
               <v-switch
-                :value="card.own"
+                :input-value="card.own"
                 inset
                 class="font-weight-bold ml-5"
                 color="teal accent-4"
@@ -14,7 +14,7 @@
                 @change="handleOwn"
               ></v-switch>
               <v-switch
-                :value="card.wish"
+                :input-value="card.wish"
                 inset
                 class="font-weight-bold ml-5"
                 color="cyan accent-4"

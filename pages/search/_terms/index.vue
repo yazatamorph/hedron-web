@@ -76,20 +76,17 @@ export default {
         // If it finds matches, it returns the matches' set & number to be
         // part of the MongoDB search query.
         if (terms.tags) {
-          console.log('Print state:', this.collectionCards);
           const matchingCards = Object.values(this.collectionCards)
             .filter(({ tags }) => terms.tags.every((tag) => tags.includes(tag)))
             // eslint-disable-next-line camelcase
             .map(({ set, collector_number }) => {
               return { set, collector_number };
             });
-          console.log('Print matches:', matchingCards);
+
           if (matchingCards && matchingCards.length) {
             terms.tags = matchingCards;
           } else {
-            // TODO: this is a placeholder - need to delay searching until vuex-persist loads store
-            terms.tags = [{ set: 'gtc', collector_number: '152' }];
-            // delete terms.tags;
+            delete terms.tags;
           }
         }
 
@@ -106,6 +103,12 @@ export default {
         );
 
         const { results = [], totalPages = 1, currentPage = 1 } = data;
+
+        if (results.length && results.length === 1) {
+          window.$nuxt.$router.push(
+            `/card/${results[0].set}/${results[0].collector_number}`
+          );
+        }
 
         this.results = results;
         this.totalPages = totalPages;
