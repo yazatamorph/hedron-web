@@ -4,13 +4,13 @@
       <v-col cols="12">
         <v-card>
           <v-card-title
-            >Showing results for search:&nbsp;
-            <strong>{{ parsedSearchString }}</strong></v-card-title
+            >Showing results for search&nbsp;
+            <strong>{{ $route.params.terms }}</strong></v-card-title
           >
         </v-card>
       </v-col>
     </v-row>
-    <v-row class="d-flex flex-wrap justify-space-around">
+    <v-row class="d-flex flex-wrap align-left">
       <v-col
         v-for="(result, index) in results"
         :key="`searchResultKey${index}`"
@@ -57,7 +57,6 @@ export default {
       results: [],
       currentPage: 1,
       totalPages: 1,
-      parsedSearchString: '',
     };
   },
   computed: {
@@ -69,8 +68,6 @@ export default {
     async handleSearch() {
       try {
         const terms = parseTerms(this.$route.params.terms);
-        // TODO: write a function to stringify the 'terms' object
-        this.parsedSearchString = terms.toString();
 
         // This block checks collection store for cards with matching tags.
         // If it finds matches, it returns the matches' set & number to be
