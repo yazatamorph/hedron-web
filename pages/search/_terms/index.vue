@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title
             >Showing results for search&nbsp;
-            <strong>{{ $route.params.terms }}</strong></v-card-title
+            <strong>{{ decodedQueryString }}</strong></v-card-title
           >
         </v-card>
       </v-col>
@@ -34,6 +34,7 @@
           v-model="currentPage"
           :length="totalPages"
           :class="totalPages > 1 ? 'd-flex' : 'd-none'"
+          @input="handleSearch"
         ></v-pagination>
       </v-col>
     </v-row>
@@ -57,6 +58,7 @@ export default {
       results: [],
       currentPage: 1,
       totalPages: 1,
+      decodedQueryString: '',
     };
   },
   computed: {
@@ -67,7 +69,8 @@ export default {
   methods: {
     async handleSearch() {
       try {
-        const terms = parseTerms(this.$route.params.terms);
+        this.decodedQueryString = decodeURIComponent(this.$route.params.terms);
+        const terms = parseTerms(this.decodedQueryString);
 
         // This block checks collection store for cards with matching tags.
         // If it finds matches, it returns the matches' set & number to be

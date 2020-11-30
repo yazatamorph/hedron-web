@@ -8,6 +8,7 @@
         clear-icon="mdi-trash-can-outline"
         single-line
         hide-details
+        @keydown.enter="handleSearch"
       >
         <template v-slot:prepend>
           <v-icon class="d-flex">mdi-cards-diamond</v-icon>
@@ -35,6 +36,15 @@ export default {
       title: 'Hedron',
       appBarSearch: '',
     };
+  },
+  methods: {
+    handleSearch() {
+      if (this.appBarSearch) {
+        const encoded = encodeURIComponent(this.appBarSearch);
+
+        window.$nuxt.$router.push(`/search/${encoded}`);
+      }
+    },
   },
 };
 </script>
