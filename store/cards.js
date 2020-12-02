@@ -71,11 +71,13 @@ export const state = () => ({
       edhrec: '',
     },
   },
+  printings: [],
 });
 
 export const getters = {
   cardImage: (state) => state.card.image_uris.png,
   cardName: (state) => state.card.name,
+  cardPrintings: (state) => state.printings,
   printingLanguage: (state) => {
     if (state.card.lang === 'en') {
       return 'English';
@@ -111,7 +113,7 @@ export const getters = {
 export const actions = {
   async queryCard({ commit }, query) {
     try {
-      const data = await this.$axios.$post(
+      let data = await this.$axios.$post(
         'http://localhost:3420/api/query/card',
         {
           query,
@@ -119,6 +121,20 @@ export const actions = {
       );
 
       commit('SET_CARD', data.card);
+
+      // find other printings here?
+      data = await this.$axios.$post(
+        'http://localhost:3420/api/query/card/printings',
+        {
+          name: data.card.name,
+          set: data.card.set,
+          collector_number: data.card.collector_number,
+        }
+      );
+
+      data.printings.sort((a, b) => (a.released_at > b.released_at ? -1 : 1));
+
+      commit('SET_PRINTINGS', data.printings);
     } catch (err) {
       console.error('Problem getting card data!', err);
     }
@@ -127,4 +143,5 @@ export const actions = {
 
 export const mutations = {
   SET_CARD: (state, card) => (state.card = card),
+  SET_PRINTINGS: (state, printings) => (state.printings = printings),
 };

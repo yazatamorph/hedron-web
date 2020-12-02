@@ -38,19 +38,40 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-divider class="elevation-1 mb-sm-2"></v-divider>
+        <!-- <v-divider class="elevation-1 mb-sm-2"></v-divider> -->
+        <v-card
+          tile
+          flat
+          dark
+          class="d-flex grey darken-3 justify-space-between"
+        >
+          <v-card-text dark>Printings</v-card-text>
+          <nuxt-link
+            :to="`/search/${cardName}`"
+            style="display: inline-block; text-decoration: none"
+          >
+            <v-card-text> (All) </v-card-text>
+          </nuxt-link>
+        </v-card>
         <div
           class="d-flex flex-column flex-sm-row flex-md-column flex-nowrap flex-sm-wrap flex-md-nowrap justify-start"
         >
-          <div v-for="n in 7" :key="n">
-            <v-list-item dense>
-              <v-list-item-content>
-                <v-list-item-subtitle>
-                  {{ `${setName} #${printingNumber}` }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
+          <div v-for="(print, index) in cardPrintings" :key="print.id">
+            <template v-if="index < 10">
+              <v-list-item dense>
+                <v-list-item-content>
+                  <nuxt-link
+                    :to="`/card/${print.set}/${print.collector_number}`"
+                    style="display: inline-block; text-decoration: none"
+                  >
+                    <v-list-item-subtitle>
+                      {{ `${print.set_name} #${print.collector_number}` }}
+                    </v-list-item-subtitle>
+                  </nuxt-link>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider v-if="index < cardPrintings.length - 1"></v-divider>
+            </template>
           </div>
         </div>
       </v-sheet>
@@ -77,6 +98,7 @@ export default {
     ...mapGetters('cards', [
       'cardImage',
       'cardName',
+      'cardPrintings',
       'printingLanguage',
       'printingRarity',
       'printingNumber',
