@@ -1,33 +1,12 @@
 <template>
   <v-row class="mb-md-6 justify-center" no-gutters>
-    <v-col cols="12" sm="6" md="4" md-offset="3">
+    <v-col cols="12" sm="6" md="3" md-offset="3">
       <CardImage :image-source="cardImage" :alt-text="makeImgAlt()" />
     </v-col>
-    <v-col cols="12" sm="6" sm-offset="6" md="4" md-offset="7">
-      <v-sheet class="my-md-n4 ml-md-n4 py-md-4 pl-md-4 rounded" outlined>
-        <v-card-title class="heading">{{ cardName }}</v-card-title>
-        <v-card-text>
-          I've got a lovely bunch of coconuts, here they are all standing in a
-          row. Lorem ipsum lasciate ogne speranza voi ch'intrate. I've got a
-          lovely bunch of coconuts, here they are all standing in a row. Lorem
-          ipsum lasciate ogne speranza voi ch'intrate. I've got a lovely bunch
-          of coconuts, here they are all standing in a row. Lorem ipsum lasciate
-          ogne speranza voi ch'intrate. I've got a lovely bunch of coconuts,
-          here they are all standing in a row. Lorem ipsum lasciate ogne
-          speranza voi ch'intrate. I've got a lovely bunch of coconuts, here
-          they are all standing in a row. Lorem ipsum lasciate ogne speranza voi
-          ch'intrate. I've got a lovely bunch of coconuts, here they are all
-          standing in a row. Lorem ipsum lasciate ogne speranza voi ch'intrate.
-          I've got a lovely bunch of coconuts, here they are all standing in a
-          row. Lorem ipsum lasciate ogne speranza voi ch'intrate. I've got a
-          lovely bunch of coconuts, here they are all standing in a row. Lorem
-          ipsum lasciate ogne speranza voi ch'intrate.
-        </v-card-text>
-      </v-sheet>
-    </v-col>
-    <v-col cols="12" md="3" class="order-md-first">
+    <v-col cols="12" sm="6" md="3" class="order-md-first">
       <v-sheet class="my-md-n4 mr-md-n4 py-md-4 pr-md-4 rounded" outlined>
-        <v-list-item two-line>
+        <v-card-title class="text-h6 mb-n6">{{ cardName }}</v-card-title>
+        <v-list-item>
           <v-list-item-avatar tile>
             <img :src="setSymbol" />
           </v-list-item-avatar>
@@ -38,26 +17,22 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <!-- <v-divider class="elevation-1 mb-sm-2"></v-divider> -->
-        <v-card
-          tile
-          flat
-          dark
-          class="d-flex grey darken-3 justify-space-between"
-        >
-          <v-card-text dark>Printings</v-card-text>
-          <nuxt-link
-            :to="`/search/${cardName}`"
-            style="display: inline-block; text-decoration: none"
-          >
-            <v-card-text> (All) </v-card-text>
-          </nuxt-link>
-        </v-card>
-        <div
-          class="d-flex flex-column flex-sm-row flex-md-column flex-nowrap flex-sm-wrap flex-md-nowrap justify-start"
-        >
-          <div v-for="(print, index) in cardPrintings" :key="print.id">
-            <template v-if="index < 10">
+        <v-menu transition="scroll-y-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="secondary"
+              tile
+              block
+              depressed
+              v-bind="attrs"
+              v-on="on"
+            >
+              Printings
+              <v-icon right>mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <div v-for="(print, index) in cardPrintings" :key="print.id">
               <v-list-item dense>
                 <v-list-item-content>
                   <nuxt-link
@@ -71,9 +46,18 @@
                 </v-list-item-content>
               </v-list-item>
               <v-divider v-if="index < cardPrintings.length - 1"></v-divider>
-            </template>
-          </div>
-        </div>
+            </div>
+          </v-list>
+        </v-menu>
+        <v-card-text class="text-body-2">
+          Mana cost Cart types Rarity Rules text Power/Toughness Flip side (if
+          applicable)
+        </v-card-text>
+      </v-sheet>
+    </v-col>
+    <v-col cols="12" md="5" md-offset="6">
+      <v-sheet class="my-md-n4 ml-md-n4 py-md-4 pl-md-4 rounded" outlined>
+        <CollectionPanel :card-id="cardId" :set-abbr="setAbbr" :num="num" />
       </v-sheet>
     </v-col>
   </v-row>
@@ -82,11 +66,18 @@
 <script>
 import { mapGetters } from 'vuex';
 import CardImage from './CardImage';
+import CollectionPanel from './CollectionPanel';
 
 export default {
   name: 'CardDetails',
   components: {
     CardImage,
+    CollectionPanel,
+  },
+  props: {
+    cardId: { type: String, required: true, default: '' },
+    num: { type: String, required: true, default: '' },
+    setAbbr: { type: String, required: true, default: '' },
   },
   data() {
     return {

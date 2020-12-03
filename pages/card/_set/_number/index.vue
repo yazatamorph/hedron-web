@@ -1,7 +1,6 @@
 <template>
   <v-container>
-    <CardDetails />
-    <CollectionPanel
+    <CardDetails
       :card-id="cID"
       :set-abbr="$route.params.set.toUpperCase()"
       :num="$route.params.number.toLowerCase()"
@@ -12,12 +11,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import CardDetails from '~/components/CardDetails';
-import CollectionPanel from '~/components/CollectionPanel';
 
 export default {
   components: {
     CardDetails,
-    CollectionPanel,
   },
   async fetch() {
     const query = {
