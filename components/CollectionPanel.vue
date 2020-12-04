@@ -23,104 +23,101 @@
           </v-col>
         </v-row>
         <!-- end upper section -->
-        <v-expand-transition>
-          <div v-show="card.own" height="100" width="100" class="mx-auto">
-            <!-- begin lower section -->
-            <!-- begin counters -->
-            <v-row class="d-flex flex-wrap justify-space-around">
-              <v-col
-                v-for="con in conditionMap"
-                :key="`colKey.${condition(con)}`"
-                cols="12"
-                sm="6"
-                class="mt-n6"
+        <!-- begin lower section -->
+        <!-- begin counters -->
+        <v-row class="d-flex flex-wrap justify-space-around">
+          <v-col
+            v-for="con in conditionMap"
+            :key="`colKey.${condition(con)}`"
+            cols="12"
+            sm="6"
+            class="mt-n6"
+          >
+            <v-card-subtitle class="mb-n11 font-weight-medium">{{
+              condition(con, true)
+            }}</v-card-subtitle>
+            <v-container>
+              <v-text-field
+                :value="card.condition[condition(con)]"
+                :rules="[rules.quantity]"
+                :disabled="!card.own"
+                readonly
+                class="centered-input rounded-lg mb-n7"
               >
-                <v-card-subtitle class="mb-n11 font-weight-medium">{{
-                  condition(con, true)
-                }}</v-card-subtitle>
-                <v-container>
-                  <v-text-field
-                    :value="card.condition[condition(con)]"
-                    :rules="[rules.quantity]"
-                    readonly
-                    class="centered-input rounded-lg mb-n7"
+                <template v-slot:prepend-inner>
+                  <v-btn
+                    depressed
+                    tile
+                    :disabled="!card.own"
+                    color="secondary"
+                    class="ma-0 rounded-tl-lg"
+                    @click="handleQuantity(con, 'add')"
                   >
-                    <template v-slot:prepend-inner>
-                      <v-btn
-                        depressed
-                        tile
-                        color="secondary"
-                        class="ma-0 rounded-tl-lg"
-                        @click="handleQuantity(con, 'add')"
-                      >
-                        <v-icon>mdi-plus</v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <v-btn
-                        depressed
-                        tile
-                        color="secondary"
-                        class="ma-0 rounded-tr-lg"
-                        @click="handleQuantity(con, 'subtract')"
-                      >
-                        <v-icon>mdi-minus</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-container>
-              </v-col>
-            </v-row>
-            <!-- end counters -->
-            <!-- begin tags, comments, etc. -->
-            <v-row class="mt-n2 mb-n10">
-              <v-col cols="12" sm="4">
-                <v-card-subtitle class="font-weight-medium"
-                  >Tags</v-card-subtitle
-                >
-                <v-text-field
-                  v-model="tagInput"
-                  outlined
-                  class="ml-4 mr-4 mr-md-0"
-                  placeholder="Enter tags..."
-                  @keydown.enter="handleSubmitTag"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="8"
-                ><v-container class="d-flex flex-wrap align-left mr-4">
-                  <v-chip
-                    v-for="(tag, index) in card.tags"
-                    :key="`tagKey${index}`"
-                    label
-                    close
-                    class="ma-1"
-                    @click:close="handleRemoveTag(index)"
-                    >{{ tag }}</v-chip
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </template>
+                <template v-slot:append>
+                  <v-btn
+                    depressed
+                    tile
+                    :disabled="!card.own"
+                    color="secondary"
+                    class="ma-0 rounded-tr-lg"
+                    @click="handleQuantity(con, 'subtract')"
                   >
-                </v-container></v-col
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </template>
+              </v-text-field>
+            </v-container>
+          </v-col>
+        </v-row>
+        <!-- end counters -->
+        <!-- begin tags, comments, etc. -->
+        <v-row class="mt-n2 mb-n10">
+          <v-col cols="12" sm="4">
+            <v-card-subtitle class="font-weight-medium">Tags</v-card-subtitle>
+            <v-text-field
+              v-model="tagInput"
+              outlined
+              class="ml-4 mr-4 mr-md-0"
+              placeholder="Enter tags..."
+              @keydown.enter="handleSubmitTag"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="8"
+            ><v-container class="d-flex flex-wrap align-left mr-4">
+              <v-chip
+                v-for="(tag, index) in card.tags"
+                :key="`tagKey${index}`"
+                label
+                close
+                class="ma-1"
+                @click:close="handleRemoveTag(index)"
+                >{{ tag }}</v-chip
               >
-            </v-row>
-            <v-row class="mb-2">
-              <v-col>
-                <v-card-subtitle class="font-weight-medium"
-                  >Comments</v-card-subtitle
-                >
-                <v-textarea
-                  :value="card.comments"
-                  outlined
-                  clearable
-                  class="mx-4"
-                  placeholder="Enter comments..."
-                  @click:clear="handleCommentsClear"
-                  @blur="handleCommentsInput"
-                  @keyup="debounceComments"
-                ></v-textarea>
-              </v-col>
-            </v-row>
-            <!-- end tags, comments, etc. -->
-            <!-- end lower section -->
-          </div>
-        </v-expand-transition>
+            </v-container></v-col
+          >
+        </v-row>
+        <v-row class="mb-2">
+          <v-col>
+            <v-card-subtitle class="font-weight-medium"
+              >Comments</v-card-subtitle
+            >
+            <v-textarea
+              :value="card.comments"
+              outlined
+              clearable
+              class="mx-4"
+              placeholder="Enter comments..."
+              @click:clear="handleCommentsClear"
+              @blur="handleCommentsInput"
+              @keyup="debounceComments"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <!-- end tags, comments, etc. -->
+        <!-- end lower section -->
       </div>
     </v-col>
   </v-row>
