@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 playground.js
+/static/card-symbols
 # Logs
 /logs
 *.log

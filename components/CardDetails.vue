@@ -85,12 +85,6 @@ export default {
     num: { type: String, required: true, default: '' },
     setAbbr: { type: String, required: true, default: '' },
   },
-  data() {
-    return {
-      setSymbol:
-        'https://c2.scryfall.com/file/scryfall-symbols/sets/a25.svg?1604898000',
-    };
-  },
   computed: {
     ...mapGetters('cards', [
       'cardArtist',
@@ -109,6 +103,7 @@ export default {
       'printingNumber',
       'setNameAbbreviation',
       'setName',
+      'setSymbol',
     ]),
   },
   methods: {

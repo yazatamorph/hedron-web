@@ -18,7 +18,6 @@
         sm="4"
         md="3"
       >
-        <!-- <nuxt-link :to="`/card/${result.set}/${result.collector_number}`"> -->
         <CardImage
           :image-source="
             result.card_faces && result.card_faces.length
@@ -33,7 +32,6 @@
           })`"
           :link-dest="`/card/${result.set}/${result.collector_number}`"
         />
-        <!-- </nuxt-link> -->
       </v-col>
     </v-row>
     <v-row>

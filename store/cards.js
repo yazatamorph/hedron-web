@@ -73,6 +73,7 @@ export const state = () => ({
     loyalty: '',
     card_faces: [],
   },
+  setSymbolURI: '',
   printings: [],
 });
 
@@ -118,33 +119,39 @@ export const getters = {
     return state.card.set.toUpperCase();
   },
   setName: (state) => state.card.set_name,
+  setSymbol: (state) => state.setSymbolURI,
 };
 
 export const actions = {
   async queryCard({ commit }, query) {
     try {
-      let data = await this.$axios.$post(
-        'http://localhost:3420/api/query/card',
-        {
+      await this.$axios
+        .$post('http://localhost:3420/api/query/card', {
           query,
-        }
-      );
+        })
+        .then(async (data) => {
+          commit('SET_CARD', data.card);
 
-      commit('SET_CARD', data.card);
-
-      // find other printings here?
-      data = await this.$axios.$post(
-        'http://localhost:3420/api/query/card/printings',
-        {
-          name: data.card.name,
-          set: data.card.set,
-          collector_number: data.card.collector_number,
-        }
-      );
-
-      data.printings.sort((a, b) => (a.released_at > b.released_at ? -1 : 1));
-
-      commit('SET_PRINTINGS', data.printings);
+          await Promise.all([
+            this.$axios
+              .$get(`https://api.scryfall.com/sets/${data.card.set}`)
+              .then((data) => {
+                commit('SET_SET_ICON', data.icon_svg_uri);
+              }),
+            this.$axios
+              .$post('http://localhost:3420/api/query/card/printings', {
+                name: data.card.name,
+                set: data.card.set,
+                collector_number: data.card.collector_number,
+              })
+              .then((data) => {
+                data.printings.sort((a, b) =>
+                  a.released_at > b.released_at ? -1 : 1
+                );
+                commit('SET_PRINTINGS', data.printings);
+              }),
+          ]);
+        });
     } catch (err) {
       console.error('Problem getting card data!', err);
     }
@@ -154,4 +161,5 @@ export const actions = {
 export const mutations = {
   SET_CARD: (state, card) => (state.card = card),
   SET_PRINTINGS: (state, printings) => (state.printings = printings),
+  SET_SET_ICON: (state, uri) => (state.setSymbolURI = uri),
 };
