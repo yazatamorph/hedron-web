@@ -70,14 +70,24 @@ export const state = () => ({
       gatherer: '',
       edhrec: '',
     },
+    loyalty: '',
+    card_faces: [],
   },
   printings: [],
 });
 
 export const getters = {
-  cardImage: (state) => state.card.image_uris.png,
+  cardArtist: (state) => state.card.artist,
+  cardCreaturePower: (state) => state.card.power,
+  cardCreatureTough: (state) => state.card.toughness,
+  cardFaces: (state) => state.card.card_faces,
+  cardImage: (state) => state.card.image_uris.normal,
+  cardManaCost: (state) => state.card.mana_cost,
   cardName: (state) => state.card.name,
+  cardOracle: (state) => state.card.oracle_text,
+  cardPlanesLoyalty: (state) => state.card.loyalty,
   cardPrintings: (state) => state.printings,
+  cardTypes: (state) => state.card.type_line,
   printingLanguage: (state) => {
     if (state.card.lang === 'en') {
       return 'English';

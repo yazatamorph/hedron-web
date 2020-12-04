@@ -1,7 +1,14 @@
 <template>
   <v-row class="mb-md-6 justify-center" no-gutters>
     <v-col cols="12" sm="6" md="3" md-offset="3">
-      <CardImage :image-source="cardImage" :alt-text="makeImgAlt()" />
+      <CardImage
+        :image-source="
+          cardFaces && cardFaces.length
+            ? [cardFaces[0].image_uris.normal, cardFaces[1].image_uris.normal]
+            : [cardImage]
+        "
+        :alt-text="makeImgAlt()"
+      />
     </v-col>
     <v-col cols="12" sm="6" md="3" class="order-md-first">
       <v-sheet class="my-md-n4 mr-md-n4 py-md-4 pr-md-4 rounded" outlined>
@@ -49,10 +56,7 @@
             </div>
           </v-list>
         </v-menu>
-        <v-card-text class="text-body-2">
-          Mana cost Cart types Rarity Rules text Power/Toughness Flip side (if
-          applicable)
-        </v-card-text>
+        <CardTextPanel />
       </v-sheet>
     </v-col>
     <v-col cols="12" md="5" md-offset="6">
@@ -66,12 +70,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import CardImage from './CardImage';
+import CardTextPanel from './CardTextPanel';
 import CollectionPanel from './CollectionPanel';
 
 export default {
   name: 'CardDetails',
   components: {
     CardImage,
+    CardTextPanel,
     CollectionPanel,
   },
   props: {
@@ -87,9 +93,17 @@ export default {
   },
   computed: {
     ...mapGetters('cards', [
+      'cardArtist',
+      'cardCreaturePower',
+      'cardCreatureTough',
+      'cardFaces',
       'cardImage',
+      'cardManaCost',
       'cardName',
+      'cardOracle',
+      'cardPlanesLoyalty',
       'cardPrintings',
+      'cardTypes',
       'printingLanguage',
       'printingRarity',
       'printingNumber',

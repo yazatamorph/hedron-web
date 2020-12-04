@@ -1,22 +1,81 @@
 <template>
-  <v-hover>
-    <template v-slot:default="{ hover }">
-      <v-img
-        class="rounded-card transition-swing"
-        :class="`elevation-${hover ? 24 : 10}`"
-        :src="imageSource"
-        :alt="altText"
-      ></v-img>
-    </template>
-  </v-hover>
+  <div>
+    <v-hover open-delay="150" close-delay="150">
+      <template v-slot:default="{ hover }">
+        <div v-if="imageSource && imageSource.length > 1">
+          <v-btn
+            v-if="hover"
+            class="transition-swing ma-2"
+            elevation="26"
+            fab
+            absolute
+            style="opacity: 90%"
+            @click="flip = !flip"
+            ><v-icon>mdi-cached</v-icon></v-btn
+          >
+          <nuxt-link v-if="linkDest" :to="linkDest">
+            <v-slide-x-reverse-transition mode="out-in">
+              <v-img
+                :key="flip ? imageSource[1] : imageSource[0]"
+                class="rounded-card transition-swing"
+                :class="`elevation-${hover ? 24 : 10}`"
+                :src="flip ? imageSource[1] : imageSource[0]"
+                :alt="altText"
+              >
+              </v-img>
+            </v-slide-x-reverse-transition>
+          </nuxt-link>
+          <v-slide-x-reverse-transition v-else mode="out-in">
+            <v-img
+              :key="flip ? imageSource[1] : imageSource[0]"
+              class="rounded-card transition-swing"
+              :class="`elevation-${hover ? 24 : 10}`"
+              :src="flip ? imageSource[1] : imageSource[0]"
+              :alt="altText"
+            >
+            </v-img>
+          </v-slide-x-reverse-transition>
+        </div>
+        <div v-else>
+          <nuxt-link v-if="linkDest" :to="linkDest">
+            <v-img
+              class="rounded-card transition-swing"
+              :class="`elevation-${hover ? 24 : 10}`"
+              :src="imageSource[0]"
+              :alt="altText"
+            ></v-img>
+          </nuxt-link>
+          <v-img
+            v-else
+            class="rounded-card transition-swing"
+            :class="`elevation-${hover ? 24 : 10}`"
+            :src="imageSource[0]"
+            :alt="altText"
+          ></v-img>
+        </div>
+      </template>
+    </v-hover>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'CardImage',
   props: {
-    imageSource: { type: String, required: true, default: '' },
+    imageSource: {
+      type: Array,
+      required: true,
+      default() {
+        return '';
+      },
+    },
     altText: { type: String, required: true, default: '' },
+    linkDest: { type: String, required: false, default: '' },
+  },
+  data() {
+    return {
+      flip: false,
+    };
   },
 };
 </script>

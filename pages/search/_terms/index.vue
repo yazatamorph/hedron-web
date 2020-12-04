@@ -18,14 +18,22 @@
         sm="4"
         md="3"
       >
-        <nuxt-link :to="`/card/${result.set}/${result.collector_number}`">
-          <CardImage
-            :image-source="result.image_uris.png"
-            :alt-text="`${result.name} (${result.set.toUpperCase()} #${
-              result.collector_number
-            })`"
-          />
-        </nuxt-link>
+        <!-- <nuxt-link :to="`/card/${result.set}/${result.collector_number}`"> -->
+        <CardImage
+          :image-source="
+            result.card_faces && result.card_faces.length
+              ? [
+                  result.card_faces[0].image_uris.png,
+                  result.card_faces[1].image_uris.png,
+                ]
+              : [result.image_uris.png]
+          "
+          :alt-text="`${result.name} (${result.set.toUpperCase()} #${
+            result.collector_number
+          })`"
+          :link-dest="`/card/${result.set}/${result.collector_number}`"
+        />
+        <!-- </nuxt-link> -->
       </v-col>
     </v-row>
     <v-row>

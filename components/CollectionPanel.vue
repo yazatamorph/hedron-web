@@ -26,8 +26,54 @@
         <v-expand-transition>
           <div v-show="card.own" height="100" width="100" class="mx-auto">
             <!-- begin lower section -->
+            <!-- begin counters -->
+            <v-row class="d-flex flex-wrap justify-space-around">
+              <v-col
+                v-for="con in conditionMap"
+                :key="`colKey.${condition(con)}`"
+                cols="12"
+                sm="6"
+                class="mt-n6"
+              >
+                <v-card-subtitle class="mb-n11 font-weight-medium">{{
+                  condition(con, true)
+                }}</v-card-subtitle>
+                <v-container>
+                  <v-text-field
+                    :value="card.condition[condition(con)]"
+                    :rules="[rules.quantity]"
+                    readonly
+                    class="centered-input rounded-lg mb-n7"
+                  >
+                    <template v-slot:prepend-inner>
+                      <v-btn
+                        depressed
+                        tile
+                        color="secondary"
+                        class="ma-0 rounded-tl-lg"
+                        @click="handleQuantity(con, 'add')"
+                      >
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </template>
+                    <template v-slot:append>
+                      <v-btn
+                        depressed
+                        tile
+                        color="secondary"
+                        class="ma-0 rounded-tr-lg"
+                        @click="handleQuantity(con, 'subtract')"
+                      >
+                        <v-icon>mdi-minus</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </v-container>
+              </v-col>
+            </v-row>
+            <!-- end counters -->
             <!-- begin tags, comments, etc. -->
-            <v-row class="mt-n6 mb-n10">
+            <v-row class="mt-n2 mb-n10">
               <v-col cols="12" sm="4">
                 <v-card-subtitle class="font-weight-medium"
                   >Tags</v-card-subtitle
@@ -72,52 +118,6 @@
               </v-col>
             </v-row>
             <!-- end tags, comments, etc. -->
-            <!-- begin counters -->
-            <v-row class="d-flex flex-wrap justify-space-around">
-              <v-col
-                v-for="con in conditionMap"
-                :key="`colKey.${condition(con)}`"
-                cols="12"
-                sm="6"
-                class="mt-n10"
-              >
-                <v-card-subtitle class="mt-n4 mb-n8 font-weight-medium">{{
-                  condition(con, true)
-                }}</v-card-subtitle>
-                <v-container>
-                  <v-text-field
-                    :value="card.condition[condition(con)]"
-                    :rules="[rules.quantity]"
-                    readonly
-                    class="centered-input rounded-lg"
-                  >
-                    <template v-slot:prepend-inner>
-                      <v-btn
-                        depressed
-                        tile
-                        color="secondary"
-                        class="ma-0 rounded-tl-lg"
-                        @click="handleQuantity(con, 'add')"
-                      >
-                        <v-icon>mdi-plus</v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append>
-                      <v-btn
-                        depressed
-                        tile
-                        color="secondary"
-                        class="ma-0 rounded-tr-lg"
-                        @click="handleQuantity(con, 'subtract')"
-                      >
-                        <v-icon>mdi-minus</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-container>
-              </v-col>
-            </v-row>
-            <!-- end counters -->
             <!-- end lower section -->
           </div>
         </v-expand-transition>
