@@ -20,12 +20,14 @@
       >
         <CardImage
           :image-source="
-            result.card_faces && result.card_faces.length
+            result.card_faces &&
+            result.card_faces.length &&
+            result.card_faces[0].image_uris
               ? [
-                  result.card_faces[0].image_uris.png,
-                  result.card_faces[1].image_uris.png,
+                  result.card_faces[0].image_uris.normal,
+                  result.card_faces[1].image_uris.normal,
                 ]
-              : [result.image_uris.png]
+              : [result.image_uris.normal]
           "
           :alt-text="`${result.name} (${result.set.toUpperCase()} #${
             result.collector_number

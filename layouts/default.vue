@@ -1,8 +1,24 @@
 <template>
   <v-app>
-    <v-app-bar class="grey darken-3" elevation="1" dark fixed app>
+    <v-navigation-drawer
+      v-model="collectOpts"
+      dark
+      clipped
+      fixed
+      app
+    ></v-navigation-drawer>
+    <v-app-bar color="grey darken-3" clipped-left dark fixed app>
+      <v-app-bar-nav-icon @click.stop="collectOpts = !collectOpts" />
+      <!-- <v-btn icon @click.stop="collectOpts = !collectOpts">
+        <v-icon
+          >mdi-cards-diamond{{ `${collectOpts ? '-outline' : ''}` }}</v-icon
+        >
+      </v-btn> -->
+      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <!-- <v-spacer></v-spacer> -->
       <v-text-field
         v-model="appBarSearch"
+        class="mx-md-6"
         label="Search the Archive..."
         clearable
         clear-icon="mdi-trash-can-outline"
@@ -10,18 +26,17 @@
         hide-details
         @keydown.enter="handleSearch"
       >
-        <template v-slot:prepend>
-          <v-icon class="d-flex">mdi-cards-diamond</v-icon>
-          <div class="mx-2 text-h5 d-none d-md-flex" v-text="title"></div>
-        </template>
       </v-text-field>
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-footer :absolute="!fixed" app>
+    <v-footer fixed app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
@@ -32,9 +47,10 @@ export default {
   middleware: 'storeRestored',
   data() {
     return {
+      appBarSearch: '',
+      collectOpts: false,
       fixed: false,
       title: 'Hedron',
-      appBarSearch: '',
     };
   },
   methods: {

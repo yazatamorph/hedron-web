@@ -3,7 +3,7 @@
     <v-col cols="12" sm="6" md="3" md-offset="3">
       <CardImage
         :image-source="
-          cardFaces && cardFaces.length
+          cardFaces && cardFaces.length && cardFaces[0].image_uris
             ? [cardFaces[0].image_uris.normal, cardFaces[1].image_uris.normal]
             : [cardImage]
         "
@@ -12,13 +12,17 @@
     </v-col>
     <v-col cols="12" sm="6" md="3" class="order-md-first">
       <v-sheet class="my-md-n4 mr-md-n4 py-md-4 pr-md-4 rounded" outlined>
-        <v-card-title class="text-h6 mb-n6">{{ cardName }}</v-card-title>
+        <v-card-title class="text-h6 mb-n6" style="word-break: normal">{{
+          cardName
+        }}</v-card-title>
         <v-list-item>
           <v-list-item-avatar tile>
             <img :src="setSymbol" />
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>{{ makeSetString() }}</v-list-item-title>
+            <v-list-item-title style="word-break: normal">{{
+              makeSetString()
+            }}</v-list-item-title>
             <v-list-item-subtitle>{{
               makePrintingInfo()
             }}</v-list-item-subtitle>
