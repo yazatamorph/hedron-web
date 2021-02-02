@@ -24,10 +24,38 @@ export const state = () => ({
     tags: [],
     comments: '',
   },
+  filters: {
+    own: true,
+    wish: false,
+    sets: [],
+    colors: [],
+    cmc: [],
+    tags: [],
+  },
 });
 
 export const getters = {
   getAllCards: (state) => state.cards,
+  getSets: (state) => {
+    const sets = [];
+    Object.keys(state.cards).forEach((card) => {
+      if (!sets.includes(state.cards[card].set) && state.cards[card].set) {
+        sets.push(state.cards[card].set);
+      }
+    });
+    return sets;
+  },
+  getTags: (state) => {
+    const tags = [];
+    Object.keys(state.cards).forEach((card) => {
+      state.cards[card].tags.forEach((tag) => {
+        if (!tags.includes(tag) && tag) {
+          tags.push(tag);
+        }
+      });
+    });
+    return tags;
+  },
 };
 
 export const actions = {
@@ -80,6 +108,50 @@ export const actions = {
     }
   },
 
+  filterCMC({ commit, state }, { cmc }) {
+    if (state.filters.cmc.includes(cmc)) {
+      commit('FILTER_CMC_REMOVE', cmc);
+    } else {
+      commit('FILTER_CMC_ADD', cmc);
+    }
+  },
+
+  filterColor({ commit, state }, { color }) {
+    if (state.filters.colors.includes(color)) {
+      commit('FILTER_COLOR_REMOVE', color);
+    } else {
+      commit('FILTER_COLOR_ADD', color);
+    }
+  },
+
+  filterOwn({ commit }) {
+    commit('FILTER_OWN');
+  },
+
+  filterResetAll({ commit }) {
+    commit('FILTER_RESET_ALL');
+  },
+
+  filterSet({ commit, state }, { set }) {
+    if (state.filters.sets.includes(set)) {
+      commit('FILTER_SET_REMOVE', set);
+    } else {
+      commit('FILTER_SET_ADD', set);
+    }
+  },
+
+  filterTag({ commit, state }, { tag }) {
+    if (state.filters.tags.includes(tag)) {
+      commit('FILTER_TAG_REMOVE', tag);
+    } else {
+      commit('FILTER_TAG_ADD', tag);
+    }
+  },
+
+  filterWish({ commit }) {
+    commit('FILTER_WISH');
+  },
+
   // async syncCollection({ commit, state, rootState, dispatch }) {
   //   try {
   //     if (!rootState.auth) {
@@ -111,6 +183,65 @@ export const mutations = {
     Vue.set(state.cards[cID], 'comments', text);
   },
 
+  FILTER_OWN(state) {
+    state.filters.own = true;
+    state.filters.wish = false;
+  },
+
+  FILTER_CMC_ADD(state, cmc) {
+    Vue.set(state.filters, 'cmc', [...state.filters.cmc, cmc]);
+  },
+
+  FILTER_CMC_REMOVE(state, cmc) {
+    const i = state.filters.cmc.indexOf(cmc);
+    state.filters.cmc.splice(i, 1);
+  },
+
+  FILTER_COLOR_ADD(state, color) {
+    Vue.set(state.filters, 'colors', [...state.filters.colors, color]);
+  },
+
+  FILTER_COLOR_REMOVE(state, color) {
+    const i = state.filters.colors.indexOf(color);
+    state.filters.colors.splice(i, 1);
+  },
+
+  FILTER_RESET_ALL(state) {
+    Vue.set(state.filters, 'own', true);
+    Vue.set(state.filters, 'wish', false);
+    Vue.set(state.filters, 'sets', []);
+    Vue.set(state.filters, 'colors', []);
+    Vue.set(state.filters, 'cmc', []);
+    Vue.set(state.filters, 'tags', []);
+  },
+
+  FILTER_SET_ADD(state, set) {
+    Vue.set(state.filters, 'sets', [...state.filters.sets, set]);
+  },
+
+  FILTER_SET_REMOVE(state, set) {
+    const i = state.filters.sets.indexOf(set);
+    state.filters.sets.splice(i, 1);
+  },
+
+  FILTER_TAG_ADD(state, tag) {
+    Vue.set(state.filters, 'tags', [...state.filters.tags, tag]);
+  },
+
+  FILTER_TAG_REMOVE(state, tag) {
+    const i = state.filters.tags.indexOf(tag);
+    state.filters.tags.splice(i, 1);
+  },
+
+  FILTER_WISH(state) {
+    state.filters.wish = !state.filters.wish;
+    if (state.filters.wish) {
+      state.filters.own = false;
+    } else {
+      state.filters.own = true;
+    }
+  },
+
   OWN_SWITCH(state, cID) {
     Vue.set(state.cards[cID], 'own', !state.cards[cID].own);
   },
@@ -140,7 +271,8 @@ export const mutations = {
   },
 
   TAG_DELETE(state, { cID, tag }) {
-    state.cards[cID].tags.splice(tag, 1);
+    const i = state.cards[cID].tags.indexOf(tag);
+    state.cards[cID].tags.splice(i, 1);
   },
 
   TAG_SUBMIT(state, { cID, tag }) {

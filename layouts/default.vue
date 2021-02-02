@@ -1,12 +1,8 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="collectOpts"
-      dark
-      clipped
-      fixed
-      app
-    ></v-navigation-drawer>
+    <v-navigation-drawer v-model="collectOpts" dark clipped fixed app>
+      <SortingDrawer />
+    </v-navigation-drawer>
     <v-app-bar color="grey darken-3" clipped-left dark fixed app>
       <v-app-bar-nav-icon @click.stop="collectOpts = !collectOpts" />
       <!-- <v-btn icon @click.stop="collectOpts = !collectOpts">
@@ -43,7 +39,12 @@
 </template>
 
 <script>
+import SortingDrawer from '~/components/SortingDrawer';
+
 export default {
+  components: {
+    SortingDrawer,
+  },
   middleware: 'storeRestored',
   data() {
     return {

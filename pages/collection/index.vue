@@ -68,6 +68,7 @@ export default {
   computed: {
     ...mapState('collection', {
       collectionCards: (state) => state.cards,
+      filters: (state) => state.filters,
     }),
   },
   methods: {
