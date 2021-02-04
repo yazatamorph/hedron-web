@@ -15,15 +15,8 @@ const parseTerms = (searchString) => {
   );
   if (set && set.length) {
     terms.set = set;
+    terms.set_name = set;
   }
-
-  const set_name = destring(
-    /(?<=(^|\s)(sn|setname):)\w+|(?<=(^|\s)(sn|setname):")[\w\s]*(?=")/g
-  );
-  if (set_name && set_name.length) {
-    terms.set_name = set_name;
-  }
-  // searching both set & set_name fields suddenly no longer returns any results...
 
   const type_line = destring(
     /(?<=(^|\s)(t|type):)\w+|(?<=(^|\s)(t|type):")[\w\s]*(?=")/g
