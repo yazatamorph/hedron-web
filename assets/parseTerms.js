@@ -15,7 +15,6 @@ const parseTerms = (searchString) => {
   );
   if (set && set.length) {
     terms.set = set;
-    terms.set_name = set;
   }
 
   const type_line = destring(
