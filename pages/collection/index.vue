@@ -68,16 +68,29 @@ export default {
   computed: {
     ...mapState('collection', {
       collectionCards: (state) => state.cards,
-      filters: (state) => state.filters,
+      filterRootState: (state) => state.filters,
+      filterOwnState: (state) => state.filters.own,
+      filterWishState: (state) => state.filters.wish,
+      filterSetsState: (state) => state.filters.sets,
+      filterColorsState: (state) => state.filters.colors,
+      filterCMCState: (state) => state.filters.cmc,
+      filterTagsState: (state) => state.filters.tags,
     }),
   },
+  watch: {
+    filterRootState: {
+      handler: 'handleSearch',
+      deep: true,
+    },
+  },
   methods: {
-    async handleSearch(opts = { own: true, wish: false }) {
+    async handleSearch() {
       try {
         const cardSelection = Object.values(this.collectionCards)
           .filter(
             // this filter function needs work lol
-            ({ own, wish }) => opts.own === own && opts.wish === wish
+            ({ own, wish }) =>
+              this.filterOwnState === own && this.filterWishState === wish
           )
           // eslint-disable-next-line camelcase
           .map(({ set, collector_number }) => {
@@ -107,6 +120,28 @@ export default {
           collection: cardSelection,
           page: this.currentPage,
         };
+
+        if (
+          this.filterSetsState ||
+          this.filterColorsState.length ||
+          this.filterCMCState ||
+          this.filterTagsState.length
+        ) {
+          query.filters = {};
+          if (this.filterSetsState) {
+            query.filters.sets = this.filterSetsState;
+          }
+          if (this.filterColorsState.length) {
+            // TODO: Needs conversion from full to short name
+            query.filters.colors = [...this.filterColorsState];
+          }
+          if (this.filterCMCState) {
+            query.filters.cmc = this.filterCMCState;
+          }
+          if (this.filterTagsState.length) {
+            query.filters.tags = [...this.filterTagsState];
+          }
+        }
 
         const data = await this.$axios.$post(
           'http://localhost:3420/api/query/collection/all',

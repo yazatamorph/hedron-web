@@ -27,9 +27,9 @@ export const state = () => ({
   filters: {
     own: true,
     wish: false,
-    sets: [],
+    sets: '',
     colors: [],
-    cmc: [],
+    cmc: null,
     tags: [],
   },
 });
@@ -109,8 +109,8 @@ export const actions = {
   },
 
   filterCMC({ commit, state }, { cmc }) {
-    if (state.filters.cmc.includes(cmc)) {
-      commit('FILTER_CMC_REMOVE', cmc);
+    if (state.filters.cmc === cmc) {
+      commit('FILTER_CMC_REMOVE');
     } else {
       commit('FILTER_CMC_ADD', cmc);
     }
@@ -133,8 +133,8 @@ export const actions = {
   },
 
   filterSet({ commit, state }, { set }) {
-    if (state.filters.sets.includes(set)) {
-      commit('FILTER_SET_REMOVE', set);
+    if (state.filters.sets === set) {
+      commit('FILTER_SET_REMOVE');
     } else {
       commit('FILTER_SET_ADD', set);
     }
@@ -184,17 +184,16 @@ export const mutations = {
   },
 
   FILTER_OWN(state) {
-    state.filters.own = true;
-    state.filters.wish = false;
+    Vue.set(state.filters, 'own', true);
+    Vue.set(state.filters, 'wish', false);
   },
 
   FILTER_CMC_ADD(state, cmc) {
-    Vue.set(state.filters, 'cmc', [...state.filters.cmc, cmc]);
+    Vue.set(state.filters, 'cmc', cmc);
   },
 
-  FILTER_CMC_REMOVE(state, cmc) {
-    const i = state.filters.cmc.indexOf(cmc);
-    state.filters.cmc.splice(i, 1);
+  FILTER_CMC_REMOVE(state) {
+    Vue.set(state.filters, 'cmc', null);
   },
 
   FILTER_COLOR_ADD(state, color) {
@@ -209,19 +208,18 @@ export const mutations = {
   FILTER_RESET_ALL(state) {
     Vue.set(state.filters, 'own', true);
     Vue.set(state.filters, 'wish', false);
-    Vue.set(state.filters, 'sets', []);
+    Vue.set(state.filters, 'sets', '');
     Vue.set(state.filters, 'colors', []);
-    Vue.set(state.filters, 'cmc', []);
+    Vue.set(state.filters, 'cmc', null);
     Vue.set(state.filters, 'tags', []);
   },
 
   FILTER_SET_ADD(state, set) {
-    Vue.set(state.filters, 'sets', [...state.filters.sets, set]);
+    Vue.set(state.filters, 'sets', set);
   },
 
-  FILTER_SET_REMOVE(state, set) {
-    const i = state.filters.sets.indexOf(set);
-    state.filters.sets.splice(i, 1);
+  FILTER_SET_REMOVE(state) {
+    Vue.set(state.filters, 'sets', '');
   },
 
   FILTER_TAG_ADD(state, tag) {
@@ -234,11 +232,11 @@ export const mutations = {
   },
 
   FILTER_WISH(state) {
-    state.filters.wish = !state.filters.wish;
+    Vue.set(state.filters, 'wish', !state.filters.wish);
     if (state.filters.wish) {
-      state.filters.own = false;
+      Vue.set(state.filters, 'own', false);
     } else {
-      state.filters.own = true;
+      Vue.set(state.filters, 'own', true);
     }
   },
 

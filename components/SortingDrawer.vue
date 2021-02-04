@@ -151,9 +151,9 @@ export default {
       if (
         !this.filterOwnState ||
         this.filterWishState ||
-        this.filterSetsState.length ||
+        this.filterSetsState ||
         this.filterColorsState.length ||
-        this.filterCMCState.length ||
+        this.filterCMCState ||
         this.filterTagsState.length
       ) {
         return true;
