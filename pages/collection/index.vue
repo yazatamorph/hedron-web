@@ -38,7 +38,7 @@
             v-model="currentPage"
             :length="totalPages"
             :class="totalPages > 1 ? 'd-flex' : 'd-none'"
-            @input="handleSearch"
+            @input="handlePagination"
           ></v-pagination>
         </v-col>
       </v-row>
@@ -55,6 +55,9 @@ export default {
     CardImage,
   },
   async fetch() {
+    this.currentPage = this.$route.query.page
+      ? parseInt(this.$route.query.page)
+      : 1;
     await this.handleSearch();
   },
   data() {
@@ -85,6 +88,11 @@ export default {
     },
   },
   methods: {
+    handlePagination(page) {
+      window.$nuxt.$router.push({ query: { page } });
+      this.handleSearch();
+    },
+
     async handleSearch() {
       try {
         const cardSelection = Object.values(this.collectionCards)
