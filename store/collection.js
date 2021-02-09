@@ -29,6 +29,7 @@ export const state = () => ({
     wish: false,
     sets: '',
     colors: [],
+    rarity: [],
     cmc: null,
     tags: [],
   },
@@ -117,15 +118,52 @@ export const actions = {
   },
 
   filterColor({ commit, state }, { color }) {
-    if (state.filters.colors.includes(color)) {
-      commit('FILTER_COLOR_REMOVE', color);
+    let abbr;
+    switch (color) {
+      case 'White':
+        abbr = 'W';
+        break;
+      case 'Blue':
+        abbr = 'U';
+        break;
+      case 'Black':
+        abbr = 'B';
+        break;
+      case 'Red':
+        abbr = 'R';
+        break;
+      case 'Green':
+        abbr = 'G';
+        break;
+      case 'Colorless':
+        abbr = 'colorless';
+        break;
+    }
+
+    if (state.filters.colors.includes(abbr)) {
+      commit('FILTER_COLOR_REMOVE', abbr);
     } else {
-      commit('FILTER_COLOR_ADD', color);
+      commit('FILTER_COLOR_ADD', abbr);
     }
   },
 
   filterOwn({ commit }) {
     commit('FILTER_OWN');
+  },
+
+  filterRarity({ commit, state }, { rarity }) {
+    let abbr;
+    if (rarity === 'Mythic Rare') {
+      abbr = 'mythic';
+    } else {
+      abbr = rarity.toLowerCase();
+    }
+
+    if (state.filters.rarity.includes(abbr)) {
+      commit('FILTER_RARITY_REMOVE', abbr);
+    } else {
+      commit('FILTER_RARITY_ADD', abbr);
+    }
   },
 
   filterResetAll({ commit }) {
@@ -205,11 +243,21 @@ export const mutations = {
     state.filters.colors.splice(i, 1);
   },
 
+  FILTER_RARITY_ADD(state, rarity) {
+    Vue.set(state.filters, 'rarity', [...state.filters.rarity, rarity]);
+  },
+
+  FILTER_RARITY_REMOVE(state, rarity) {
+    const i = state.filters.rarity.indexOf(rarity);
+    state.filters.rarity.splice(i, 1);
+  },
+
   FILTER_RESET_ALL(state) {
     Vue.set(state.filters, 'own', true);
     Vue.set(state.filters, 'wish', false);
     Vue.set(state.filters, 'sets', '');
     Vue.set(state.filters, 'colors', []);
+    Vue.set(state.filters, 'rarity', []);
     Vue.set(state.filters, 'cmc', null);
     Vue.set(state.filters, 'tags', []);
   },

@@ -71,6 +71,7 @@ export default {
       filterRootState: (state) => state.filters,
       filterOwnState: (state) => state.filters.own,
       filterWishState: (state) => state.filters.wish,
+      filterRarityState: (state) => state.filters.rarity,
       filterSetsState: (state) => state.filters.sets,
       filterColorsState: (state) => state.filters.colors,
       filterCMCState: (state) => state.filters.cmc,
@@ -124,6 +125,7 @@ export default {
         if (
           this.filterSetsState ||
           this.filterColorsState.length ||
+          this.filterRarityState ||
           this.filterCMCState ||
           this.filterTagsState.length
         ) {
@@ -132,14 +134,27 @@ export default {
             query.filters.sets = this.filterSetsState;
           }
           if (this.filterColorsState.length) {
-            // TODO: Needs conversion from full to short name
-            query.filters.colors = [...this.filterColorsState];
+            query.filters.colors = this.filterColorsState;
+          }
+          if (this.filterRarityState.length) {
+            query.filters.rarity = this.filterRarityState;
           }
           if (this.filterCMCState) {
             query.filters.cmc = this.filterCMCState;
           }
           if (this.filterTagsState.length) {
-            query.filters.tags = [...this.filterTagsState];
+            const matchingCards = Object.values(this.collectionCards)
+              .filter(({ tags }) =>
+                this.filterTagsState.every((tag) => tags.includes(tag))
+              )
+              // eslint-disable-next-line camelcase
+              .map(({ set, collector_number }) => {
+                return { set, collector_number };
+              });
+
+            if (matchingCards && matchingCards.length) {
+              query.filters.tags = matchingCards;
+            }
           }
         }
 
@@ -152,11 +167,11 @@ export default {
 
         const { results = [], totalPages = 1, currentPage = 1 } = data;
 
-        if (results.length && results.length === 1) {
-          window.$nuxt.$router.push(
-            `/card/${results[0].set}/${results[0].collector_number}`
-          );
-        }
+        // if (results.length && results.length === 1) {
+        //   window.$nuxt.$router.push(
+        //     `/card/${results[0].set}/${results[0].collector_number}`
+        //   );
+        // }
 
         this.results = results;
         this.totalPages = totalPages;

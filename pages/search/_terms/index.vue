@@ -34,6 +34,66 @@
           })`"
           :link-dest="`/card/${result.set}/${result.collector_number}`"
         />
+        <v-row>
+          <v-col cols="12">
+            <v-menu
+              offset-y
+              transition="slide-y-reverse-transition"
+              open-on-hover
+              top
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="secondary"
+                  block
+                  depressed
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-chevron-up</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <v-list-item dense class="mb-n5">
+                  <!-- <v-list-item-content> -->
+                  <v-list-item-title>{{ result.name }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item dense>
+                  <v-list-item-subtitle
+                    >{{ result.set_name }}
+                    {{ result.collector_number }}</v-list-item-subtitle
+                  >
+                </v-list-item>
+                <v-list-item dense>
+                  <v-switch
+                    :input-value="
+                      collectionCards[handleCardId(result)]
+                        ? collectionCards[handleCardId(result)].own
+                        : false
+                    "
+                    inset
+                    color="teal accent-4"
+                    label="Owned"
+                    @change="handleOwn(result)"
+                  ></v-switch>
+                </v-list-item>
+                <v-list-item dense>
+                  <v-switch
+                    :input-value="
+                      collectionCards[handleCardId(result)]
+                        ? collectionCards[handleCardId(result)].wish
+                        : false
+                    "
+                    inset
+                    color="cyan accent-4"
+                    label="Wishlist"
+                    @change="handleWish(result)"
+                  ></v-switch>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>
@@ -50,7 +110,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import CardImage from '~/components/CardImage';
 import parseTerms from '~/assets/parseTerms';
 
@@ -75,6 +135,8 @@ export default {
     }),
   },
   methods: {
+    ...mapActions('collection', ['changeOwn', 'changeWish']),
+
     async handleSearch() {
       try {
         this.decodedQueryString = decodeURIComponent(this.$route.params.terms);
@@ -127,6 +189,55 @@ export default {
       } catch (err) {
         console.error('Problem getting search results!', err);
       }
+    },
+
+    handleOwn(card) {
+      const cID = this.handleCardId(card);
+      const cardData = this.handleCardData(card);
+
+      this.changeOwn({
+        cID,
+        cardData,
+      });
+    },
+
+    handleWish(card) {
+      const cID = this.handleCardId(card);
+      const cardData = this.handleCardData(card);
+
+      this.changeWish({
+        cID,
+        cardData,
+      });
+    },
+
+    handleCardId(card) {
+      return `${card.set.toUpperCase()}${card.collector_number.toLowerCase()}`;
+    },
+
+    handleCardData(card) {
+      return this.collectionCards[this.handleCardId(card)]
+        ? this.collectionCards[this.handleCardId(card)]
+        : {
+            set: card.set.toLowerCase(),
+            collector_number: card.collector_number,
+            own: false,
+            wish: false,
+            condition: {
+              nm: 0,
+              lp: 0,
+              mp: 0,
+              hp: 0,
+              dmg: 0,
+              nmf: 0,
+              lpf: 0,
+              mpf: 0,
+              hpf: 0,
+              dmgf: 0,
+            },
+            tags: [],
+            comments: '',
+          };
     },
   },
 };
