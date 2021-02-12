@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 export const state = () => ({
-  guid: '',
+  guid: 'zareenTestCollection',
   cards: {},
   updated: '',
   cardInit: {
@@ -33,6 +33,7 @@ export const state = () => ({
     cmc: null,
     tags: [],
   },
+  synchronizing: false,
 });
 
 export const getters = {
@@ -190,6 +191,28 @@ export const actions = {
     commit('FILTER_WISH');
   },
 
+  async syncWithDb({ commit, state }, update) {
+    try {
+      const cards =
+        update && update.length
+          ? update
+          : Object.values(state.cards).filter(
+              (card) => card.set && card.collector_number
+            );
+      commit('SYNC_IN_PROGRESS');
+
+      await this.$axios.$post('http://localhost:3420/api/collection/sync/db', {
+        guid: 'zareenTestCollection',
+        cards,
+      });
+
+      commit('SYNC_COMPLETE');
+    } catch (err) {
+      commit('SYNC_COMPLETE');
+      console.error('Problem synchronizing card data!', err);
+    }
+  },
+
   // async syncCollection({ commit, state, rootState, dispatch }) {
   //   try {
   //     if (!rootState.auth) {
@@ -314,6 +337,14 @@ export const mutations = {
       return;
     }
     Vue.set(state.cards[cID].condition, con, 1);
+  },
+
+  SYNC_COMPLETE(state) {
+    Vue.set(state, 'synchronizing', false);
+  },
+
+  SYNC_IN_PROGRESS(state) {
+    Vue.set(state, 'synchronizing', true);
   },
 
   TAG_DELETE(state, { cID, tag }) {

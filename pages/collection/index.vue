@@ -167,7 +167,7 @@ export default {
         }
 
         const data = await this.$axios.$post(
-          'http://localhost:3420/api/query/collection/all',
+          'http://localhost:3420/api/collection/query',
           {
             ...query,
           }

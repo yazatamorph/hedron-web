@@ -7,7 +7,9 @@ const parseTerms = (searchString) => {
     return _.words(searchString, regex);
   };
 
-  const name = destring(/(?<=^|\s)\b\w+\b(?![:"])|(?<=(^|\s)")[\w\s]+\b(?=")/g);
+  const name = destring(
+    /(?<=^|\s)\b\w+\b(?![=:"])|(?<=(^|\s)")[\w\s]+\b(?=")/g
+  );
   if (name && name.length) terms.name = name;
 
   const set = destring(
@@ -15,6 +17,13 @@ const parseTerms = (searchString) => {
   );
   if (set && set.length) {
     terms.set = set;
+  }
+
+  const setAbbr = destring(
+    /(?<=(^|\s)(s|set)=)\w+|(?<=(^|\s)(s|set)=")\w+(?=")/g
+  );
+  if (setAbbr && setAbbr.length) {
+    terms.setAbbr = setAbbr;
   }
 
   const type_line = destring(

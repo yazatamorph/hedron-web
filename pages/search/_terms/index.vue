@@ -40,6 +40,7 @@
               offset-y
               transition="slide-y-reverse-transition"
               open-on-hover
+              :close-on-content-click="false"
               top
             >
               <template v-slot:activator="{ on, attrs }">

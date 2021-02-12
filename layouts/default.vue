@@ -23,9 +23,14 @@
         @keydown.enter="handleSearch"
       >
       </v-text-field>
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
+      <v-menu offset-y bottom left :close-on-content-click="false">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn dark icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+        <AccountMenu />
+      </v-menu>
     </v-app-bar>
     <v-main class="grey lighten-2">
       <v-container>
@@ -39,10 +44,12 @@
 </template>
 
 <script>
+import AccountMenu from '~/components/AccountMenu';
 import SortingDrawer from '~/components/SortingDrawer';
 
 export default {
   components: {
+    AccountMenu,
     SortingDrawer,
   },
   middleware: 'storeRestored',

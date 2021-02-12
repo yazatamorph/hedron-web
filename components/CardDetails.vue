@@ -28,7 +28,10 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-menu transition="scroll-y-transition">
+        <v-menu
+          v-if="cardPrintings && cardPrintings.length"
+          transition="scroll-y-transition"
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="secondary"
