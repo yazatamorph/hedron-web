@@ -70,6 +70,7 @@ export default {
   },
   computed: {
     ...mapState('collection', {
+      guid: (state) => state.guid,
       collectionCards: (state) => state.cards,
       filterRootState: (state) => state.filters,
       filterOwnState: (state) => state.filters.own,
@@ -95,47 +96,22 @@ export default {
 
     async handleSearch() {
       try {
-        const cardSelection = Object.values(this.collectionCards)
-          .filter(
-            // this filter function needs work lol
-            ({ own, wish }) =>
-              this.filterOwnState === own && this.filterWishState === wish
-          )
-          // eslint-disable-next-line camelcase
-          .map(({ set, collector_number }) => {
-            return { set, collector_number };
-          });
-
-        // Collection: { SET000: { set: 'set', collector_number: '000', own: true }, ... }
-        // This block checks collection store for cards with matching tags.
-        // If it finds matches, it returns the matches' set & number to be
-        // part of the MongoDB search query.
-        // if (terms.tags) {
-        //   const matchingCards = Object.values(this.collectionCards)
-        //     .filter(({ tags }) => terms.tags.every((tag) => tags.includes(tag)))
-        //     // eslint-disable-next-line camelcase
-        //     .map(({ set, collector_number }) => {
-        //       return { set, collector_number };
-        //     });
-
-        //   if (matchingCards && matchingCards.length) {
-        //     terms.tags = matchingCards;
-        //   } else {
-        //     delete terms.tags;
-        //   }
-        // }
-
         const query = {
-          collection: cardSelection,
+          guid: this.guid,
           page: this.currentPage,
         };
+
+        if (!this.$route.query.page) {
+          query.page = 1;
+        }
 
         if (
           this.filterSetsState ||
           this.filterColorsState.length ||
           this.filterRarityState ||
           this.filterCMCState ||
-          this.filterTagsState.length
+          this.filterTagsState.length ||
+          this.filterWishState
         ) {
           query.filters = {};
           if (this.filterSetsState) {
@@ -151,18 +127,10 @@ export default {
             query.filters.cmc = this.filterCMCState;
           }
           if (this.filterTagsState.length) {
-            const matchingCards = Object.values(this.collectionCards)
-              .filter(({ tags }) =>
-                this.filterTagsState.every((tag) => tags.includes(tag))
-              )
-              // eslint-disable-next-line camelcase
-              .map(({ set, collector_number }) => {
-                return { set, collector_number };
-              });
-
-            if (matchingCards && matchingCards.length) {
-              query.filters.tags = matchingCards;
-            }
+            query.filters.tags = this.filterTagsState;
+          }
+          if (this.filterWishState) {
+            query.filters.wish = this.filterWishState;
           }
         }
 

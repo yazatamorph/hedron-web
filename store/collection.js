@@ -1,10 +1,12 @@
 import Vue from 'vue';
+import sortBy from 'lodash/sortBy';
 
 export const state = () => ({
   guid: 'zareenTestCollection',
   cards: {},
   updated: '',
   cardInit: {
+    setNumAbbr: '',
     set: '',
     collector_number: '',
     own: false,
@@ -41,11 +43,20 @@ export const getters = {
   getSets: (state) => {
     const sets = [];
     Object.keys(state.cards).forEach((card) => {
-      if (!sets.includes(state.cards[card].set) && state.cards[card].set) {
+      if (
+        !sets.includes(state.cards[card].set) &&
+        state.cards[card].set &&
+        ((state.cards[card].own &&
+          state.cards[card].own === state.filters.own) ||
+          (state.cards[card].wish &&
+            state.cards[card].wish === state.filters.wish))
+      ) {
         sets.push(state.cards[card].set);
       }
     });
-    return sets;
+    return sortBy(sets, function (i) {
+      return i;
+    });
   },
   getTags: (state) => {
     const tags = [];
@@ -56,7 +67,9 @@ export const getters = {
         }
       });
     });
-    return tags;
+    return sortBy(tags, function (i) {
+      return i;
+    });
   },
 };
 
@@ -201,12 +214,18 @@ export const actions = {
             );
       commit('SYNC_IN_PROGRESS');
 
-      await this.$axios.$post('http://localhost:3420/api/collection/sync/db', {
-        guid: 'zareenTestCollection',
-        cards,
-      });
+      const data = await this.$axios.$post(
+        'http://localhost:3420/api/collection/sync/db',
+        {
+          guid: state.guid,
+          cards,
+        }
+      );
+
+      commit('SYNC_COLLECTION_FROM_DB', data.cards);
 
       commit('SYNC_COMPLETE');
+      commit('UPDATE_TIMESTAMP');
     } catch (err) {
       commit('SYNC_COMPLETE');
       console.error('Problem synchronizing card data!', err);
@@ -339,6 +358,10 @@ export const mutations = {
     Vue.set(state.cards[cID].condition, con, 1);
   },
 
+  SYNC_COLLECTION_FROM_DB(state, cards) {
+    Vue.set(state, 'cards', cards);
+  },
+
   SYNC_COMPLETE(state) {
     Vue.set(state, 'synchronizing', false);
   },
@@ -363,7 +386,7 @@ export const mutations = {
   UPDATE_TIMESTAMP(state, cID) {
     state.updated = new Date();
     if (cID) {
-      Vue.set(state.cards[cID], 'updated', new Date());
+      Vue.set(state.cards[cID], 'updatedAt', new Date());
     }
   },
 
