@@ -1,11 +1,7 @@
 <template>
   <div>
     <v-list>
-      <v-list-item to="/collection">
-        <v-list-item-title>Collection</v-list-item-title>
-        <v-list-item-icon><v-icon>mdi-cards</v-icon></v-list-item-icon>
-      </v-list-item>
-
+      <SyncSettings />
       <v-list-item-group>
         <v-list-item @click="handleOwnFilter">
           <v-list-item-subtitle>Owned</v-list-item-subtitle></v-list-item
@@ -115,9 +111,13 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SyncSettings from '~/components/SyncSettings';
 
 export default {
   name: 'SortingDrawer',
+  components: {
+    SyncSettings,
+  },
   data() {
     return {
       colors: ['White', 'Blue', 'Black', 'Red', 'Green', 'Colorless'],

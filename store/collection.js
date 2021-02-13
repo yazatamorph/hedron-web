@@ -2,9 +2,12 @@ import Vue from 'vue';
 import sortBy from 'lodash/sortBy';
 
 export const state = () => ({
-  guid: 'zareenTestCollection',
+  guid: '',
   cards: {},
   updated: '',
+  synched: '',
+  synchronizing: false,
+  autoSync: false,
   cardInit: {
     setNumAbbr: '',
     set: '',
@@ -35,7 +38,6 @@ export const state = () => ({
     cmc: null,
     tags: [],
   },
-  synchronizing: false,
 });
 
 export const getters = {
@@ -71,6 +73,13 @@ export const getters = {
       return i;
     });
   },
+  timeSinceSync: (state) => {
+    if (!state.synched || !state.updated) {
+      return 0;
+    } else {
+      return Date.parse(state.updated) - Date.parse(state.synched);
+    }
+  },
 };
 
 export const actions = {
@@ -79,6 +88,10 @@ export const actions = {
 
     commit('UPDATE_COLLECTION', { cID, cardData });
     commit('UPDATE_TIMESTAMP');
+  },
+
+  changeAutoSync({ commit }, bool) {
+    commit('UPDATE_AUTO_SYNC', bool);
   },
 
   changeComments({ commit }, { cID, text }) {
@@ -213,6 +226,7 @@ export const actions = {
               (card) => card.set && card.collector_number
             );
       commit('SYNC_IN_PROGRESS');
+      console.log('DUMP:', cards);
 
       const data = await this.$axios.$post(
         'http://localhost:3420/api/collection/sync/db',
@@ -225,9 +239,11 @@ export const actions = {
       commit('SYNC_COLLECTION_FROM_DB', data.cards);
 
       commit('SYNC_COMPLETE');
+      commit('UPDATE_SYNCHED', true);
       commit('UPDATE_TIMESTAMP');
     } catch (err) {
       commit('SYNC_COMPLETE');
+      commit('UPDATE_SYNCHED');
       console.error('Problem synchronizing card data!', err);
     }
   },
@@ -358,6 +374,10 @@ export const mutations = {
     Vue.set(state.cards[cID].condition, con, 1);
   },
 
+  SET_GUID(state, guid) {
+    Vue.set(state, 'guid', guid);
+  },
+
   SYNC_COLLECTION_FROM_DB(state, cards) {
     Vue.set(state, 'cards', cards);
   },
@@ -379,15 +399,28 @@ export const mutations = {
     Vue.set(state.cards[cID], 'tags', [...state.cards[cID].tags, tag]);
   },
 
+  UPDATE_AUTO_SYNC(state, bool) {
+    Vue.set(state, 'autoSync', bool);
+  },
+
   UPDATE_COLLECTION(state, { cID, cardData }) {
     Vue.set(state.cards, cID, cardData);
   },
 
-  UPDATE_TIMESTAMP(state, cID) {
-    state.updated = new Date();
-    if (cID) {
-      Vue.set(state.cards[cID], 'updatedAt', new Date());
+  UPDATE_SYNCHED(state, success) {
+    if (!success) {
+      Vue.set(state, 'synched', '');
+    } else {
+      Vue.set(state, 'synched', new Date());
     }
+  },
+
+  UPDATE_TIMESTAMP(state, cID) {
+    const date = new Date();
+    if (cID) {
+      Vue.set(state.cards[cID], 'updatedAt', date);
+    }
+    state.updated = date;
   },
 
   WISH_SWITCH(state, cID) {
