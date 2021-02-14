@@ -69,8 +69,10 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      guid: (state) => state.user.guid,
+    }),
     ...mapState('collection', {
-      guid: (state) => state.guid,
       collectionCards: (state) => state.cards,
       filterRootState: (state) => state.filters,
       filterOwnState: (state) => state.filters.own,
@@ -101,9 +103,9 @@ export default {
           page: this.currentPage,
         };
 
-        if (!this.$route.query.page) {
-          query.page = 1;
-        }
+        // if (!this.$route.query.page) {
+        //   query.page = 1;
+        // }
 
         if (
           this.filterSetsState ||

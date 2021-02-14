@@ -1,22 +1,136 @@
+import Vue from 'vue';
+
 export const state = () => ({
+  loggedIn: false,
   user: {
-    auth: false,
+    accessToken: '',
+    refreshToken: '',
     email: '',
     guid: '',
-    preferences: {},
-    screenName: '',
   },
 });
 
-export const getters = {
-  user: (state) => state.user,
-  auth: (state) => state.user.auth,
-  email: (state) => state.user.email,
-  guid: (state) => state.user.guid,
-  preferences: (state) => state.user.preferences,
-  screenName: (state) => state.user.screenName,
+export const getters = {};
+
+export const actions = {
+  async logInUser({ commit, dispatch }, credentials) {
+    try {
+      if (!credentials.email || !credentials.password) {
+        throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
+      }
+
+      const data = await this.$axios.$post(
+        'http://localhost:3666/api/account/login',
+        credentials
+      );
+
+      if (
+        !data.guid ||
+        !data.email ||
+        !data.accessToken ||
+        !data.refreshToken
+      ) {
+        throw new Error('LOGIN_CREDENTIALS_INVALID');
+      }
+      // COMMIT USER DATA
+      commit('LOG_IN_SUCCESS');
+      commit('SET_GUID', data.guid);
+      commit('SET_EMAIL', data.email);
+      commit('SET_ACCESS_TOKEN', data.accessToken);
+      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      // DISPATCH COLLECTION SYNC ACTION
+      dispatch('collection/syncWithDb');
+    } catch (err) {
+      commit('LOG_IN_FAILED');
+      commit('CLEAR_USER');
+      console.error('Problem logging in!', err);
+    }
+  },
+
+  logOutUser({ commit, dispatch }) {
+    try {
+      commit('LOG_OUT');
+      commit('CLEAR_USER');
+      dispatch('collection/clearCollection');
+    } catch (err) {
+      console.error('Problem logging out!', err);
+      commit('LOG_OUT');
+      commit('CLEAR_USER');
+    }
+  },
+
+  async registerUser({ commit, dispatch }, credentials) {
+    try {
+      if (!credentials.email || !credentials.password) {
+        throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
+      }
+
+      const data = await this.$axios.$post(
+        'http://localhost:3666/api/account/register',
+        credentials
+      );
+
+      if (
+        !data.guid ||
+        !data.email ||
+        !data.accessToken ||
+        !data.refreshToken
+      ) {
+        throw new Error('REGISTER_CREDENTIALS_INVALID');
+      }
+      // COMMIT USER DATA
+      commit('LOG_IN_SUCCESS');
+      commit('SET_GUID', data.guid);
+      commit('SET_EMAIL', data.email);
+      commit('SET_ACCESS_TOKEN', data.accessToken);
+      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      // DISPATCH COLLECTION SYNC ACTION
+      // This creates the new user's collection document
+      dispatch('collection/syncWithDb');
+    } catch (err) {
+      commit('LOG_IN_FAILED');
+      commit('CLEAR_USER');
+      console.error('Problem registering user!', err);
+    }
+  },
 };
 
-export const actions = {};
+export const mutations = {
+  CLEAR_USER(state) {
+    const clearUser = {
+      accessToken: '',
+      refreshToken: '',
+      email: '',
+      guid: '',
+    };
+    Vue.set(state, 'user', clearUser);
+  },
 
-export const mutations = {};
+  LOG_IN_FAILED(state) {
+    Vue.set(state, 'loggedIn', false);
+  },
+
+  LOG_IN_SUCCESS(state) {
+    Vue.set(state, 'loggedIn', true);
+  },
+
+  LOG_OUT(state) {
+    Vue.set(state, 'loggedIn', false);
+  },
+
+  SET_ACCESS_TOKEN(state, accessToken) {
+    Vue.set(state.user, 'accessToken', accessToken);
+  },
+
+  SET_EMAIL(state, email) {
+    Vue.set(state.user, 'email', email);
+  },
+
+  SET_GUID(state, guid) {
+    Vue.set(state.user, 'guid', guid);
+  },
+
+  SET_REFRESH_TOKEN(state, refreshToken) {
+    Vue.set(state.user, 'refreshToken', refreshToken);
+  },
+};

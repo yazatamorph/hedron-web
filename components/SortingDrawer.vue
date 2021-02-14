@@ -1,11 +1,19 @@
 <template>
   <div>
     <v-list>
-      <SyncSettings />
+      <v-list-item to="/collection">
+        <v-list-item-content>
+          <v-list-item-title>Collection</v-list-item-title>
+        </v-list-item-content>
+
+        <v-icon>mdi-cards</v-icon>
+      </v-list-item>
+      <v-divider></v-divider>
+
       <v-list-item-group>
-        <v-list-item @click="handleOwnFilter">
+        <!-- <v-list-item @click="handleOwnFilter">
           <v-list-item-subtitle>Owned</v-list-item-subtitle></v-list-item
-        >
+        > -->
         <v-list-item @click="handleWishFilter"
           ><v-list-item-subtitle>Wishlist</v-list-item-subtitle></v-list-item
         >
@@ -105,6 +113,8 @@
       <v-list-item v-if="displayReset()" @click="handleResetFilters">
         <v-list-item-subtitle>Reset Filters</v-list-item-subtitle>
       </v-list-item>
+      <v-divider></v-divider>
+      <SyncSettings />
     </v-list>
   </div>
 </template>

@@ -2,7 +2,6 @@ import Vue from 'vue';
 import sortBy from 'lodash/sortBy';
 
 export const state = () => ({
-  guid: '',
   cards: {},
   updated: '',
   synched: '',
@@ -136,6 +135,11 @@ export const actions = {
     }
   },
 
+  clearCollection({ commit }) {
+    commit('CLEAR_COLLECTION');
+    commit('FILTER_RESET_ALL');
+  },
+
   filterCMC({ commit, state }, { cmc }) {
     if (state.filters.cmc === cmc) {
       commit('FILTER_CMC_REMOVE');
@@ -217,7 +221,7 @@ export const actions = {
     commit('FILTER_WISH');
   },
 
-  async syncWithDb({ commit, state }, update) {
+  async syncWithDb({ commit, state, rootState }, update) {
     try {
       const cards =
         update && update.length
@@ -226,12 +230,11 @@ export const actions = {
               (card) => card.set && card.collector_number
             );
       commit('SYNC_IN_PROGRESS');
-      console.log('DUMP:', cards);
 
       const data = await this.$axios.$post(
         'http://localhost:3420/api/collection/sync/db',
         {
-          guid: state.guid,
+          guid: rootState.user.guid,
           cards,
         }
       );
@@ -275,6 +278,35 @@ export const actions = {
 };
 
 export const mutations = {
+  CLEAR_COLLECTION(state) {
+    const cardInit = {
+      setNumAbbr: '',
+      set: '',
+      collector_number: '',
+      own: false,
+      wish: false,
+      condition: {
+        nm: 0,
+        lp: 0,
+        mp: 0,
+        hp: 0,
+        dmg: 0,
+        nmf: 0,
+        lpf: 0,
+        mpf: 0,
+        hpf: 0,
+        dmgf: 0,
+      },
+    };
+
+    Vue.set(state, 'cards', {});
+    Vue.set(state, 'updated', '');
+    Vue.set(state, 'synched', '');
+    Vue.set(state, 'synchronizing', false);
+    Vue.set(state, 'autoSync', false);
+    Vue.set(state, 'cardInit', cardInit);
+  },
+
   COMMENT_SUBMIT(state, { cID, text }) {
     Vue.set(state.cards[cID], 'comments', text);
   },
@@ -372,10 +404,6 @@ export const mutations = {
       return;
     }
     Vue.set(state.cards[cID].condition, con, 1);
-  },
-
-  SET_GUID(state, guid) {
-    Vue.set(state, 'guid', guid);
   },
 
   SYNC_COLLECTION_FROM_DB(state, cards) {

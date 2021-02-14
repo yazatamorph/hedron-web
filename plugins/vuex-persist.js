@@ -6,6 +6,5 @@ export default ({ store }) => {
     storage: localforage,
     asyncStorage: true,
     key: 'hedron',
-    modules: ['collection'],
   }).plugin(store);
 };

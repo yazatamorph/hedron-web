@@ -4,7 +4,10 @@
       <SortingDrawer />
     </v-navigation-drawer>
     <v-app-bar color="grey darken-3" clipped-left dark fixed app>
-      <v-app-bar-nav-icon @click.stop="collectOpts = !collectOpts" />
+      <v-app-bar-nav-icon
+        v-if="loggedIn && guid"
+        @click.stop="collectOpts = !collectOpts"
+      />
       <!-- <v-btn icon @click.stop="collectOpts = !collectOpts">
         <v-icon
           >mdi-cards-diamond{{ `${collectOpts ? '-outline' : ''}` }}</v-icon
@@ -44,6 +47,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import AccountMenu from '~/components/AccountMenu';
 import SortingDrawer from '~/components/SortingDrawer';
 
@@ -60,6 +64,12 @@ export default {
       fixed: false,
       title: 'Hedron',
     };
+  },
+  computed: {
+    ...mapState({
+      loggedIn: (state) => state.loggedIn,
+      guid: (state) => state.user.guid,
+    }),
   },
   methods: {
     handleSearch() {

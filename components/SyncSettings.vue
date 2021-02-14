@@ -1,10 +1,19 @@
 <template>
   <div>
-    <v-list-item to="/collection">
-      <v-list-item-content>
-        <v-list-item-title>Collection</v-list-item-title>
-      </v-list-item-content>
+    <v-list-item>
+      <v-list-item-subtitle>Keep Synchronized</v-list-item-subtitle>
+      <v-list-item-action>
+        <v-switch
+          :input-value="autoSync"
+          inset
+          color="teal accent-2"
+          @change="handleAutoSyncToggle"
+        ></v-switch>
+      </v-list-item-action>
+    </v-list-item>
 
+    <v-list-item>
+      <v-list-item-subtitle>Sync Now</v-list-item-subtitle>
       <v-list-item-action>
         <v-btn
           :loading="isSynchronizing"
@@ -16,18 +25,6 @@
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item>
-      <v-list-item-action>
-        <v-switch
-          :input-value="autoSync"
-          color="teal accent-4"
-          @change="handleAutoSyncToggle"
-        ></v-switch>
-      </v-list-item-action>
-      <v-list-item-subtitle>Keep Synchronized</v-list-item-subtitle>
-    </v-list-item>
-
-    <v-divider></v-divider>
   </div>
 </template>
 
