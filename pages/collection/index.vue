@@ -51,6 +51,7 @@ import { mapState } from 'vuex';
 import CardImage from '~/components/CardImage';
 
 export default {
+  layout: 'main',
   components: {
     CardImage,
   },

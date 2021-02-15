@@ -13,6 +13,7 @@ import { mapActions, mapState } from 'vuex';
 import CardDetails from '~/components/CardDetails';
 
 export default {
+  layout: 'main',
   components: {
     CardDetails,
   },

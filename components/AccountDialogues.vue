@@ -1,18 +1,61 @@
 <template>
   <div>
-    <v-card-actions v-if="!loggedIn">
-      <v-dialog v-model="registerShow" persistent max-width="600px">
+    <div v-if="!loggedIn">
+      <v-dialog
+        v-model="loginShow"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            class="mr-1"
-            color="secondary"
-            outlined
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            Register
-          </v-btn>
+          <v-btn :dark="isDark" text v-bind="attrs" v-on="on"> Log In </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Log In</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="inputEmail"
+                    label="Email"
+                    :rules="[rules.required, rules.email]"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="inputPassword"
+                    label="Password"
+                    type="password"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" text @click="loginShow = false">
+              Close
+            </v-btn>
+            <v-btn color="secondary" outlined @click="handleLogin">
+              Submit
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        v-model="registerShow"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn :dark="isDark" text v-bind="attrs" v-on="on"> Register </v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -54,56 +97,11 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </div>
 
-      <v-dialog v-model="loginShow" persistent max-width="600px">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn class="ml-1" color="secondary" dark v-bind="attrs" v-on="on">
-            Log In
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Log In</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputEmail"
-                    label="Email"
-                    :rules="[rules.required, rules.email]"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputPassword"
-                    label="Password"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red darken-1" text @click="loginShow = false">
-              Close
-            </v-btn>
-            <v-btn color="secondary" outlined @click="handleLogin">
-              Submit
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-card-actions>
-
-    <v-card-actions v-else>
-      <v-spacer></v-spacer>
+    <div v-else>
       <v-btn color="secondary" text @click="handleLogout"> Log Out </v-btn>
-    </v-card-actions>
+    </div>
   </div>
 </template>
 
@@ -112,6 +110,13 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'AccountDialogues',
+  props: {
+    isDark: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
       loginShow: false,
@@ -167,7 +172,7 @@ export default {
         this.inputEmail = '';
         this.inputPassword = '';
       } catch (err) {
-        console.error('Problem with handleLogin');
+        console.error('Problem with handleRegister');
         this.inputEmail = '';
         this.inputPassword = '';
       }

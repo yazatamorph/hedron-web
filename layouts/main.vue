@@ -1,16 +1,53 @@
 <template>
   <v-app>
-    <v-app-bar class="px-md-16" color="transparent" clipped-left flat fixed app>
+    <v-navigation-drawer
+      v-if="loggedIn && guid"
+      v-model="collectOpts"
+      dark
+      clipped
+      fixed
+      app
+    >
+      <SortingDrawer />
+    </v-navigation-drawer>
+    <v-app-bar
+      class="px-md-16"
+      color="grey darken-3"
+      clipped-left
+      dark
+      flat
+      fixed
+      app
+    >
+      <v-app-bar-nav-icon
+        v-if="loggedIn && guid"
+        @click.stop="collectOpts = !collectOpts"
+      />
+      <!-- <v-btn icon @click.stop="collectOpts = !collectOpts">
+        <v-icon
+          >mdi-cards-diamond{{ `${collectOpts ? '-outline' : ''}` }}</v-icon
+        >
+      </v-btn> -->
       <v-toolbar-title v-text="title"></v-toolbar-title>
-
-      <v-spacer></v-spacer>
+      <!-- <v-spacer></v-spacer> -->
+      <v-text-field
+        v-model="appBarSearch"
+        class="mx-md-6"
+        label="Search the Archive..."
+        clearable
+        clear-icon="mdi-trash-can-outline"
+        single-line
+        hide-details
+        @keydown.enter="handleSearch"
+      >
+      </v-text-field>
       <!-- <v-menu offset-y bottom left :close-on-content-click="false">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn dark icon v-bind="attrs" v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template> -->
-      <AccountDialogues />
+      <AccountDialogues is-dark="true" />
       <!-- </v-menu> -->
     </v-app-bar>
     <v-main class="grey lighten-2">
@@ -28,11 +65,13 @@
 import { mapState } from 'vuex';
 import AccountDialogues from '~/components/AccountDialogues';
 // import AccountMenu from '~/components/AccountMenu';
+import SortingDrawer from '~/components/SortingDrawer';
 
 export default {
   components: {
     AccountDialogues,
     // AccountMenu,
+    SortingDrawer,
   },
   middleware: 'storeRestored',
   data() {

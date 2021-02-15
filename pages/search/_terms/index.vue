@@ -116,6 +116,7 @@ import CardImage from '~/components/CardImage';
 import parseTerms from '~/assets/parseTerms';
 
 export default {
+  layout: 'main',
   components: {
     CardImage,
   },
