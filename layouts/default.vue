@@ -1,7 +1,18 @@
 <template>
   <v-app>
-    <v-app-bar class="px-md-16" color="transparent" clipped-left flat fixed app>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+    <v-app-bar color="transparent" clipped-left flat fixed app>
+      <router-link to="/"
+        ><v-img
+          class="mr-4"
+          max-height="48"
+          max-width="48"
+          src="/hedron.png"
+        ></v-img
+      ></router-link>
+      <v-btn color="white" text to="/">Hedron</v-btn>
+      <v-btn v-if="loggedIn" color="white" text to="/collection"
+        >Collection</v-btn
+      >
 
       <v-spacer></v-spacer>
       <!-- <v-menu offset-y bottom left :close-on-content-click="false">
@@ -13,7 +24,7 @@
       <AccountDialogues />
       <!-- </v-menu> -->
     </v-app-bar>
-    <v-main class="grey lighten-2">
+    <v-main class="bg-gradient">
       <v-container>
         <nuxt />
       </v-container>
@@ -40,7 +51,7 @@ export default {
       appBarSearch: '',
       collectOpts: false,
       fixed: false,
-      title: 'Hedron',
+      searchFlat: true,
     };
   },
   computed: {
@@ -60,3 +71,29 @@ export default {
   },
 };
 </script>
+
+<style>
+.bg-gradient {
+  background: hsla(192, 9%, 20%, 1);
+
+  background: linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  background: -moz-linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  background: -webkit-linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#132226", endColorstr="#466066", GradientType=1 );
+}
+</style>

@@ -6,11 +6,11 @@
         <logo />
         <vuetify-logo />
       </div> -->
-        <div class="text-center text-h3 mt-md-10 mb-md-n2">
+        <div class="text-center text-h3 white--text mt-md-10 mb-md-n2">
           Welcome to the Archive, Planeswalker.
         </div>
         <br />
-        <div class="text-center text-h5 mb-md-10">
+        <div class="text-center text-h5 white--text mb-md-10">
           <strong>Hedron</strong> is a collection manager for
           <strong>Magic: The Gathering</strong>.
         </div>
@@ -21,6 +21,7 @@
         <v-text-field
           v-model="cardSearch"
           label="Search the Archive..."
+          dark
           clearable
           clear-icon="mdi-trash-can-outline"
           solo

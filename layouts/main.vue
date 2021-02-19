@@ -3,7 +3,9 @@
     <v-navigation-drawer
       v-if="loggedIn && guid"
       v-model="collectOpts"
+      color="transparent"
       dark
+      permanent
       clipped
       fixed
       app
@@ -11,33 +13,38 @@
       <SortingDrawer />
     </v-navigation-drawer>
     <v-app-bar
-      class="px-md-16"
-      color="grey darken-3"
+      color="hsla(192, 50%, 15%, 1)"
       clipped-left
-      dark
-      flat
+      elevate-on-scroll
       fixed
       app
     >
-      <v-app-bar-nav-icon
+      <!-- <v-app-bar-nav-icon
         v-if="loggedIn && guid"
         @click.stop="collectOpts = !collectOpts"
-      />
-      <!-- <v-btn icon @click.stop="collectOpts = !collectOpts">
-        <v-icon
-          >mdi-cards-diamond{{ `${collectOpts ? '-outline' : ''}` }}</v-icon
-        >
-      </v-btn> -->
-      <v-toolbar-title v-text="title"></v-toolbar-title>
-      <!-- <v-spacer></v-spacer> -->
+      /> -->
+      <router-link to="/"
+        ><v-img
+          class="mr-4"
+          max-height="48"
+          max-width="48"
+          src="/hedron.png"
+        ></v-img
+      ></router-link>
+      <v-btn color="white" text to="/">Hedron</v-btn>
       <v-text-field
         v-model="appBarSearch"
-        class="mx-md-6"
+        class="mx-md-16"
         label="Search the Archive..."
+        dark
         clearable
         clear-icon="mdi-trash-can-outline"
-        single-line
+        solo
+        dense
         hide-details
+        :flat="searchFlat"
+        @focus="searchFlat = false"
+        @blur="searchFlat = true"
         @keydown.enter="handleSearch"
       >
       </v-text-field>
@@ -50,7 +57,7 @@
       <AccountDialogues is-dark="true" />
       <!-- </v-menu> -->
     </v-app-bar>
-    <v-main class="grey lighten-2">
+    <v-main class="bg-gradient">
       <v-container>
         <nuxt />
       </v-container>
@@ -99,3 +106,29 @@ export default {
   },
 };
 </script>
+
+<style>
+.bg-gradient {
+  background: hsla(192, 9%, 20%, 1);
+
+  background: linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  background: -moz-linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  background: -webkit-linear-gradient(
+    -90deg,
+    hsla(192, 50%, 15%, 1) 10%,
+    hsla(192, 31%, 40%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#132226", endColorstr="#466066", GradientType=1 );
+}
+</style>

@@ -8,7 +8,9 @@
         transition="dialog-bottom-transition"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn :dark="isDark" text v-bind="attrs" v-on="on"> Log In </v-btn>
+          <v-btn :dark="isDark" color="white" text v-bind="attrs" v-on="on">
+            Log In
+          </v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -55,7 +57,9 @@
         transition="dialog-bottom-transition"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn :dark="isDark" text v-bind="attrs" v-on="on"> Register </v-btn>
+          <v-btn :dark="isDark" color="white" text v-bind="attrs" v-on="on">
+            Register
+          </v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -100,7 +104,9 @@
     </div>
 
     <div v-else>
-      <v-btn color="secondary" text @click="handleLogout"> Log Out </v-btn>
+      <v-btn :dark="isDark" color="white" text @click="handleLogout">
+        Log Out
+      </v-btn>
     </div>
   </div>
 </template>
