@@ -33,11 +33,12 @@
         ></v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="10" offset="1">
           <v-pagination
             v-model="currentPage"
             :length="totalPages"
             :class="totalPages > 1 ? 'd-flex' : 'd-none'"
+            color="grey darken-4"
             @input="handlePagination"
           ></v-pagination>
         </v-col>

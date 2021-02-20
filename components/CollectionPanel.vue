@@ -1,22 +1,20 @@
 <template>
-  <v-row class="mt-md-4 justify-center" no-gutters>
-    <v-col cols="12" md="11" md-offset="1">
+  <v-row class="justify-center" no-gutters>
+    <v-col cols="12">
       <div>
         <v-row no-gutters>
           <v-col cols="12" class="d-flex flex-nowrap">
             <v-switch
               :input-value="card.own"
-              inset
               class="font-weight-bold ml-5"
-              color="teal accent-4"
+              color="white"
               label="Owned"
               @change="handleOwn"
             ></v-switch>
             <v-switch
               :input-value="card.wish"
-              inset
               class="font-weight-bold ml-5"
-              color="cyan accent-4"
+              color="white"
               label="Wishlist"
               @change="handleWish"
             ></v-switch>
@@ -25,51 +23,122 @@
         <!-- end upper section -->
         <!-- begin lower section -->
         <!-- begin counters -->
-        <v-row class="d-flex flex-wrap justify-space-around">
+        <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
           <v-col
-            v-for="con in conditionMap"
-            :key="`colKey.${condition(con)}`"
             cols="12"
             sm="6"
-            class="mt-n6"
+            class="px-md-4 d-flex flex-wrap justify-space-around"
           >
-            <v-card-subtitle class="mb-n11 font-weight-medium">{{
-              condition(con, true)
-            }}</v-card-subtitle>
-            <v-container>
-              <v-text-field
-                :value="card.condition[condition(con)]"
-                :rules="[rules.quantity]"
-                :disabled="!card.own"
-                readonly
-                class="centered-input rounded-lg mb-n7"
-              >
-                <template v-slot:prepend-inner>
-                  <v-btn
-                    depressed
-                    tile
-                    :disabled="!card.own"
-                    color="secondary"
-                    class="ma-0 rounded-tl-lg"
-                    @click="handleQuantity(con, 'add')"
-                  >
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                </template>
-                <template v-slot:append>
-                  <v-btn
-                    depressed
-                    tile
-                    :disabled="!card.own"
-                    color="secondary"
-                    class="ma-0 rounded-tr-lg"
-                    @click="handleQuantity(con, 'subtract')"
-                  >
-                    <v-icon>mdi-minus</v-icon>
-                  </v-btn>
-                </template>
-              </v-text-field>
-            </v-container>
+            <v-card>
+              <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
+                <v-card-title class="text-h6 mt-n2 mb-n2"
+                  >Non-Foil</v-card-title
+                >
+              </v-row>
+              <v-row class="d-flex flex-wrap justify-space-around">
+                <v-col
+                  v-for="con in conditionMap"
+                  :key="`colKey.${condition(con)}`"
+                  cols="12"
+                  sm="6"
+                  class="mt-n6"
+                >
+                  <v-card-subtitle class="mb-n5 font-weight-medium">{{
+                    condition(con, true)
+                  }}</v-card-subtitle>
+                  <v-container>
+                    <v-text-field
+                      :value="card.condition[condition(con)]"
+                      :rules="[rules.quantity]"
+                      :disabled="!card.own"
+                      readonly
+                      rounded
+                      light
+                      solo
+                      flat
+                      dense
+                      class="centered-input mb-n7"
+                    >
+                      <template v-slot:prepend-inner>
+                        <v-btn
+                          icon
+                          :disabled="!card.own"
+                          @click="handleQuantity(con, 'add')"
+                        >
+                          <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                      </template>
+                      <template v-slot:append>
+                        <v-btn
+                          icon
+                          :disabled="!card.own"
+                          @click="handleQuantity(con, 'subtract')"
+                        >
+                          <v-icon>mdi-minus</v-icon>
+                        </v-btn>
+                      </template>
+                    </v-text-field>
+                  </v-container>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="6"
+            class="px-md-4 d-flex flex-wrap justify-space-around"
+          >
+            <v-card>
+              <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
+                <v-card-title class="text-h6 mt-n2 mb-n2">Foil</v-card-title>
+              </v-row>
+              <v-row class="d-flex flex-wrap justify-space-around">
+                <v-col
+                  v-for="con in conditionMapFoil"
+                  :key="`colKey.${condition(con)}`"
+                  cols="12"
+                  sm="6"
+                  class="mt-n6"
+                >
+                  <v-card-subtitle class="mb-n5 font-weight-medium">{{
+                    condition(con, true)
+                  }}</v-card-subtitle>
+                  <v-container>
+                    <v-text-field
+                      :value="card.condition[condition(con)]"
+                      :rules="[rules.quantity]"
+                      :disabled="!card.own"
+                      readonly
+                      rounded
+                      light
+                      solo
+                      flat
+                      dense
+                      class="centered-input mb-n7"
+                    >
+                      <template v-slot:prepend-inner>
+                        <v-btn
+                          icon
+                          :disabled="!card.own"
+                          @click="handleQuantity(con, 'add')"
+                        >
+                          <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                      </template>
+                      <template v-slot:append>
+                        <v-btn
+                          icon
+                          :disabled="!card.own"
+                          @click="handleQuantity(con, 'subtract')"
+                        >
+                          <v-icon>mdi-minus</v-icon>
+                        </v-btn>
+                      </template>
+                    </v-text-field>
+                  </v-container>
+                </v-col>
+              </v-row>
+            </v-card>
           </v-col>
         </v-row>
         <!-- end counters -->
@@ -79,7 +148,8 @@
             <v-card-subtitle class="font-weight-medium">Tags</v-card-subtitle>
             <v-text-field
               v-model="tagInput"
-              outlined
+              solo
+              flat
               class="ml-4 mr-4 mr-md-0"
               placeholder="Enter tags..."
               @keydown.enter="handleSubmitTag"
@@ -90,7 +160,7 @@
               <v-chip
                 v-for="(tag, index) in card.tags"
                 :key="`tagKey${index}`"
-                label
+                color="grey darken-4"
                 close
                 class="ma-1"
                 @click:close="handleRemoveTag(index)"
@@ -106,7 +176,8 @@
             >
             <v-textarea
               :value="card.comments"
-              outlined
+              solo
+              flat
               clearable
               class="mx-4"
               placeholder="Enter comments..."
@@ -159,15 +230,17 @@ export default {
       commentInput: '',
       conditionMap: [
         { nm: 'Near Mint' },
-        { nmf: 'Near Mint Foil' },
         { lp: 'Lightly Played' },
-        { lpf: 'Lightly Played Foil' },
         { mp: 'Moderately Played' },
-        { mpf: 'Moderately Played Foil' },
         { hp: 'Heavily Played' },
-        { hpf: 'Heavily Played Foil' },
         { dmg: 'Damaged' },
-        { dmgf: 'Damaged Foil' },
+      ],
+      conditionMapFoil: [
+        { nmf: 'Near Mint' },
+        { lpf: 'Lightly Played' },
+        { mpf: 'Moderately Played' },
+        { hpf: 'Heavily Played' },
+        { dmgf: 'Damaged' },
       ],
       rules: {
         quantity: (value) =>
@@ -248,5 +321,8 @@ export default {
 <style scoped>
 .centered-input >>> input {
   text-align: center;
+}
+.card-outline {
+  outline: 2px solid #ffffff;
 }
 </style>

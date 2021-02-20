@@ -11,7 +11,7 @@
             absolute
             style="opacity: 90%"
             @click="flip = !flip"
-            ><v-icon>mdi-cached</v-icon></v-btn
+            ><v-icon>mdi-rotate-left</v-icon></v-btn
           >
           <nuxt-link v-if="linkDest" :to="linkDest">
             <v-slide-x-reverse-transition mode="out-in">

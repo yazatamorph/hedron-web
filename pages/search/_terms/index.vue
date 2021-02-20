@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card>
+        <v-card dark>
           <v-card-title
             >Showing results for search&nbsp;
             <strong>{{ decodedQueryString }}</strong></v-card-title
@@ -45,7 +45,8 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  color="secondary"
+                  color="grey darken-4"
+                  dark
                   block
                   depressed
                   v-bind="attrs"
@@ -98,11 +99,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="10" offset="1">
         <v-pagination
           v-model="currentPage"
           :length="totalPages"
           :class="totalPages > 1 ? 'd-flex' : 'd-none'"
+          color="grey darken-4"
           @input="handlePagination"
         ></v-pagination>
       </v-col>

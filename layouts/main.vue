@@ -5,7 +5,6 @@
       v-model="collectOpts"
       color="transparent"
       dark
-      permanent
       clipped
       fixed
       app
@@ -84,7 +83,7 @@ export default {
   data() {
     return {
       appBarSearch: '',
-      collectOpts: false,
+      collectOpts: true,
       fixed: false,
       title: 'Hedron',
     };
