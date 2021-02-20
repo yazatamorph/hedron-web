@@ -12,41 +12,58 @@
             Log In
           </v-btn>
         </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Log In</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputEmail"
-                    label="Email"
-                    :rules="[rules.required, rules.email]"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputPassword"
-                    label="Password"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red darken-1" text @click="loginShow = false">
-              Close
-            </v-btn>
-            <v-btn color="secondary" outlined @click="handleLogin">
-              Submit
-            </v-btn>
-          </v-card-actions>
+        <v-card color="grey darken-4" dark>
+          <v-row>
+            <v-col cols="12" sm="8" offset-sm="2" md="6" offset-md="3">
+              <v-card-title>
+                <v-list-item>
+                  <v-list-item-avatar>
+                    <img src="/hedron.png" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="headline"
+                      >Ah, you've been here before.</v-list-item-title
+                    >
+                    <v-list-item-subtitle>Why not log in?</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="inputEmail"
+                        outlined
+                        label="Email"
+                        :rules="[rules.required, rules.email]"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="inputPassword"
+                        outlined
+                        label="Password"
+                        :rules="[rules.required]"
+                        type="password"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" text @click="handleCloseButton">
+                  Close
+                </v-btn>
+                <v-btn color="white" outlined @click="handleLogin">
+                  Submit
+                </v-btn>
+              </v-card-actions>
+            </v-col>
+          </v-row>
         </v-card>
       </v-dialog>
 
@@ -61,44 +78,62 @@
             Register
           </v-btn>
         </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Register</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputEmail"
-                    label="Email"
-                    :rules="[rules.required, rules.email]"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="inputPassword"
-                    label="Password"
-                    type="password"
-                    hint="Passwords must be eight or more characters in length and include at least one upper case letter, one lower case letter, one number, and one symbol (e.g. _!@#/)"
-                    persistent-hint
-                    :rules="[rules.required]"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red darken-1" text @click="registerShow = false">
-              Close
-            </v-btn>
-            <v-btn color="secondary" outlined @click="handleRegister">
-              Submit
-            </v-btn>
-          </v-card-actions>
+        <v-card dark>
+          <v-row>
+            <v-col cols="12" sm="8" offset-sm="2" md="6" offset-md="3">
+              <v-card-title>
+                <v-list-item>
+                  <v-list-item-avatar>
+                    <img src="/hedron.png" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="headline"
+                      >Is this your first visit to Hedron?</v-list-item-title
+                    >
+                    <v-list-item-subtitle
+                      >Register to start your collection.</v-list-item-subtitle
+                    >
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="inputEmail"
+                        label="Email"
+                        outlined
+                        :rules="[rules.required, rules.email]"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="inputPassword"
+                        label="Password"
+                        outlined
+                        type="password"
+                        hint="Passwords must be eight or more characters in length and include at least one upper case letter, one lower case letter, one number, and one symbol (e.g. _!@#/)"
+                        persistent-hint
+                        :rules="[rules.required]"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" text @click="handleCloseButton">
+                  Close
+                </v-btn>
+                <v-btn color="white" outlined @click="handleRegister">
+                  Submit
+                </v-btn>
+              </v-card-actions>
+            </v-col>
+          </v-row>
         </v-card>
       </v-dialog>
     </div>
@@ -146,6 +181,16 @@ export default {
   methods: {
     ...mapActions(['logInUser', 'logOutUser', 'registerUser']),
     ...mapActions('collection', ['syncWithDb']),
+
+    handleCloseButton() {
+      if (this.loginShow) {
+        this.loginShow = false;
+      }
+      if (this.registerShow) {
+        this.registerShow = false;
+      }
+      this.inputPassword = '';
+    },
 
     async handleLogin() {
       try {
