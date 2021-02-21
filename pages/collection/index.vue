@@ -113,7 +113,7 @@ export default {
           this.filterSetsState ||
           this.filterColorsState.length ||
           this.filterRarityState ||
-          this.filterCMCState ||
+          typeof this.filterCMCState === 'number' ||
           this.filterTagsState.length ||
           this.filterWishState
         ) {
@@ -127,7 +127,7 @@ export default {
           if (this.filterRarityState.length) {
             query.filters.rarity = this.filterRarityState;
           }
-          if (this.filterCMCState) {
+          if (typeof this.filterCMCState === 'number') {
             query.filters.cmc = this.filterCMCState;
           }
           if (this.filterTagsState.length) {

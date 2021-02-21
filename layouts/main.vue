@@ -53,7 +53,7 @@
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template> -->
-      <AccountDialogues is-dark="true" />
+      <AccountDialogues :is-dark="true" />
       <!-- </v-menu> -->
     </v-app-bar>
     <v-main class="bg-gradient">
@@ -86,6 +86,7 @@ export default {
       collectOpts: true,
       fixed: false,
       title: 'Hedron',
+      searchFlat: true,
     };
   },
   computed: {
