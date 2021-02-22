@@ -74,7 +74,6 @@
                         ? collectionCards[handleCardId(result)].own
                         : false
                     "
-                    inset
                     color="teal accent-4"
                     label="Owned"
                     @change="handleOwn(result)"
@@ -87,8 +86,7 @@
                         ? collectionCards[handleCardId(result)].wish
                         : false
                     "
-                    inset
-                    color="cyan accent-4"
+                    color="teal accent-4"
                     label="Wishlist"
                     @change="handleWish(result)"
                   ></v-switch>
@@ -181,7 +179,7 @@ export default {
         this.searchInProgress = true;
 
         let data = await this.$axios.$get(
-          `https://api.scryfall.com/cards/search?q=${replace(
+          `https://api.scryfall.com/cards/search?order=set&q=${replace(
             queryParams,
             /\s/g,
             '+'
@@ -210,6 +208,7 @@ export default {
         this.totalPages = Math.ceil(this.totalCards / 20);
         /* eslint-enable camelcase */
       } catch (err) {
+        this.searchInProgress = false;
         console.error('Problem getting results from Scryfall', err);
       }
     },
