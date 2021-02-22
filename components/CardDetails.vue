@@ -62,7 +62,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title style="word-break: normal">{{
-              makeSetString()
+              card.type_line
             }}</v-list-item-title>
             <v-list-item-title>{{ makePrintingInfo() }}</v-list-item-title>
           </v-list-item-content>
@@ -112,13 +112,10 @@ export default {
         this.card.collector_number
       })`;
     },
-    makeSetString() {
-      return `${this.card.set_name} (${_.toUpper(this.card.set)})`;
-    },
     makePrintingInfo() {
-      return `#${this.card.collector_number} | ${_.capitalize(
-        this.card.rarity
-      )}`;
+      return `${this.card.set_name} (${_.toUpper(this.card.set)}) #${
+        this.card.collector_number
+      } | ${_.capitalize(this.card.rarity)}`;
     },
   },
 };
