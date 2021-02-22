@@ -187,7 +187,7 @@ export default {
             '+'
           )}`
         );
-
+        /* eslint-disable camelcase */
         const { total_cards = null } = data;
         let {
           has_more = false,
@@ -208,6 +208,7 @@ export default {
         this.results = results;
         this.totalCards = total_cards;
         this.totalPages = Math.ceil(this.totalCards / 20);
+        /* eslint-enable camelcase */
       } catch (err) {
         console.error('Problem getting results from Scryfall', err);
       }
