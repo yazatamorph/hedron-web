@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <LoadingOverlay :displaying="searchInProgress" />
+
     <v-row>
       <v-col cols="12">
         <v-card dark>
@@ -12,7 +14,7 @@
     </v-row>
     <v-row class="d-flex flex-wrap align-left">
       <v-col
-        v-for="(result, index) in results"
+        v-for="(result, index) in displayedResults"
         :key="`searchResultKey${index}`"
         rows="12"
         sm="4"
@@ -57,7 +59,6 @@
               </template>
               <v-list dense>
                 <v-list-item dense class="mb-n5">
-                  <!-- <v-list-item-content> -->
                   <v-list-item-title>{{ result.name }}</v-list-item-title>
                 </v-list-item>
                 <v-list-item dense>
@@ -99,14 +100,39 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="10" offset="1">
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          :class="totalPages > 1 ? 'd-flex' : 'd-none'"
-          color="grey darken-4"
-          @input="handlePagination"
-        ></v-pagination>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn
+          class="mr-1"
+          dark
+          :disabled="currentPage === 1"
+          :outlined="currentPage === 1"
+          @click="makePages(1)"
+          ><v-icon>mdi-page-first</v-icon></v-btn
+        >
+        <v-btn
+          class="mx-1"
+          dark
+          :disabled="currentPage === 1"
+          :outlined="currentPage === 1"
+          @click="makePages(currentPage - 1)"
+          >Previous 20</v-btn
+        >
+        <v-btn
+          class="mx-1"
+          dark
+          :disabled="currentPage === totalPages"
+          :outlined="currentPage === totalPages"
+          @click="makePages(currentPage + 1)"
+          >Next 20</v-btn
+        >
+        <v-btn
+          class="ml-1"
+          dark
+          :disabled="currentPage === totalPages"
+          :outlined="currentPage === totalPages"
+          @click="makePages(totalPages)"
+          ><v-icon>mdi-page-last</v-icon></v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
@@ -114,102 +140,91 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import replace from 'lodash/replace';
 import CardImage from '~/components/CardImage';
-import parseTerms from '~/assets/parseTerms';
+import LoadingOverlay from '~/components/LoadingOverlay';
 
 export default {
   layout: 'main',
   components: {
     CardImage,
+    LoadingOverlay,
   },
   async fetch() {
-    this.currentPage = this.$route.query.page
-      ? parseInt(this.$route.query.page)
-      : 1;
     await this.handleSearch();
+    this.makePages(1);
   },
   data() {
     return {
       results: [],
+      displayedResults: [],
+      totalCards: null,
+      nextResultsURI: undefined,
       currentPage: 1,
       totalPages: 1,
       decodedQueryString: '',
+      searchInProgress: false,
     };
   },
   computed: {
     ...mapState('collection', {
       collectionCards: (state) => state.cards,
     }),
-
-    // currentPage: {
-    //   get() {
-
-    //   },
-    //   set(value) {
-
-    //   },
-    // },
   },
   methods: {
     ...mapActions('collection', ['changeOwn', 'changeWish']),
 
-    handlePagination(page) {
-      window.$nuxt.$router.push({ query: { page } });
-      this.handleSearch();
-    },
-
     async handleSearch() {
       try {
-        this.decodedQueryString = decodeURIComponent(this.$route.params.terms);
-        const terms = parseTerms(this.decodedQueryString);
+        const queryParams = this.$route.params.terms;
+        this.decodedQueryString = decodeURIComponent(queryParams);
+        this.searchInProgress = true;
 
-        // This block checks collection store for cards with matching tags.
-        // If it finds matches, it returns the matches' set & number to be
-        // part of the MongoDB search query.
-        if (terms.tags) {
-          const matchingCards = Object.values(this.collectionCards)
-            .filter(({ tags }) => terms.tags.every((tag) => tags.includes(tag)))
-            // eslint-disable-next-line camelcase
-            .map(({ set, collector_number }) => {
-              return { set, collector_number };
-            });
-
-          if (matchingCards && matchingCards.length) {
-            terms.tags = matchingCards;
-          } else {
-            delete terms.tags;
-          }
-        }
-
-        const query = {
-          terms,
-          page: this.currentPage,
-        };
-
-        const data = await this.$axios.$post(
-          'http://localhost:3420/api/query/search',
-          {
-            ...query,
-          }
+        let data = await this.$axios.$get(
+          `https://api.scryfall.com/cards/search?q=${replace(
+            queryParams,
+            /\s/g,
+            '+'
+          )}`
         );
 
-        const { results = [], totalPages = 1, currentPage = 1 } = data;
+        const { total_cards = null } = data;
+        let {
+          has_more = false,
+          next_page = undefined,
+          data: results = [],
+        } = data;
 
-        if (results.length && results.length === 1) {
-          window.$nuxt.$router.push(
-            `/card/${results[0].set}/${results[0].collector_number}`
-          );
+        while (has_more) {
+          data = await this.$axios.$get(next_page);
+          has_more = data.has_more;
+          if (data.has_more) {
+            next_page = data.next_page;
+          }
+          results = [...results, ...data.data];
         }
 
+        this.searchInProgress = false;
         this.results = results;
-        this.totalPages = totalPages;
-
-        if (this.currentPage !== currentPage) {
-          this.currentPage = currentPage;
-        }
+        this.totalCards = total_cards;
+        this.totalPages = Math.ceil(this.totalCards / 20);
       } catch (err) {
-        console.error('Problem getting search results!', err);
+        console.error('Problem getting results from Scryfall', err);
       }
+    },
+
+    makePages(pageNumber) {
+      const toDisplay = [];
+      const startIndex = pageNumber * 20 - 20;
+      const endIndex =
+        pageNumber * 20 > this.totalCards ? this.totalCards : pageNumber * 20;
+
+      for (let i = startIndex; i < endIndex; i++) {
+        toDisplay.push(this.results[i]);
+      }
+
+      this.displayedResults = toDisplay;
+      this.currentPage = pageNumber;
     },
 
     handleOwn(card) {
