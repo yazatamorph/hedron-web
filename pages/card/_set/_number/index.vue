@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      cID: `${this.$route.params.set.toUpperCase()}${this.$route.params.number.toLowerCase()}`,
+      cID: `${this.$route.params.set}${this.$route.params.number}`,
       card: {},
       prints: [],
       setSymbol: '',

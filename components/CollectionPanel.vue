@@ -150,6 +150,7 @@
               v-model="tagInput"
               solo
               flat
+              :disabled="!card.own"
               class="ml-4 mr-4 mr-md-0"
               placeholder="Enter tags..."
               @keydown.enter="handleSubmitTag"
@@ -179,6 +180,7 @@
               solo
               flat
               clearable
+              :disabled="!card.own"
               class="mx-4"
               placeholder="Enter comments..."
               @click:clear="handleCommentsClear"
@@ -202,31 +204,16 @@ export default {
   name: 'CollectionPanel',
   props: {
     cardId: { type: String, required: true, default: '' },
-    num: { type: String, required: true, default: '' },
-    setAbbr: { type: String, required: true, default: '' },
+    cardData: {
+      type: Object,
+      required: true,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
-      cardInit: {
-        set: this.setAbbr.toLowerCase(),
-        collector_number: this.num,
-        own: false,
-        wish: false,
-        condition: {
-          nm: 0,
-          lp: 0,
-          mp: 0,
-          hp: 0,
-          dmg: 0,
-          nmf: 0,
-          lpf: 0,
-          mpf: 0,
-          hpf: 0,
-          dmgf: 0,
-        },
-        tags: [],
-        comments: '',
-      },
       commentInput: '',
       conditionMap: [
         { nm: 'Near Mint' },
@@ -257,7 +244,45 @@ export default {
       cards: (state) => state.cards,
       card(state) {
         if (!state.cards[this.cardId]) {
-          return this.cardInit;
+          const newCard = {
+            setNumAbbr: this.cardId,
+            collector_number: this.cardData.collector_number,
+            name: this.cardData.name,
+            set: this.cardData.set,
+            set_name: this.cardData.set_name,
+            color_identity: this.cardData.color_identity,
+            rarity: this.cardData.rarity,
+            cmc: this.cardData.cmc,
+            own: false,
+            wish: false,
+            condition: {
+              nm: 0,
+              lp: 0,
+              mp: 0,
+              hp: 0,
+              dmg: 0,
+              nmf: 0,
+              lpf: 0,
+              mpf: 0,
+              hpf: 0,
+              dmgf: 0,
+            },
+            tags: [],
+            comments: '',
+          };
+
+          if (this.cardData.image_uris && this.cardData.image_uris.normal) {
+            newCard.image_uris = this.cardData.image_uris;
+          }
+          if (
+            this.cardData.card_faces &&
+            this.cardData.card_faces.length &&
+            this.cardData.card_faces[0].image_uris
+          ) {
+            newCard.card_faces = this.cardData.card_faces;
+          }
+
+          return newCard;
         }
         return state.cards[this.cardId];
       },
@@ -270,7 +295,6 @@ export default {
       'changeQuantity',
       'changeTags',
       'changeWish',
-      'enterInCollection',
     ]),
 
     condition(con, long) {

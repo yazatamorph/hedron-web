@@ -9,8 +9,13 @@ export const state = () => ({
   autoSync: false,
   cardInit: {
     setNumAbbr: '',
-    set: '',
     collector_number: '',
+    name: '',
+    set: '',
+    set_name: '',
+    color_identity: [],
+    rarity: '',
+    cmc: null,
     own: false,
     wish: false,
     condition: {
@@ -83,6 +88,7 @@ export const getters = {
 
 export const actions = {
   addToCollection({ commit }, { cID, cardData, op }) {
+    // op = 'own' or 'wish'
     cardData[op] = true;
 
     commit('UPDATE_COLLECTION', { cID, cardData });
@@ -250,39 +256,18 @@ export const actions = {
       console.error('Problem synchronizing card data!', err);
     }
   },
-
-  // async syncCollection({ commit, state, rootState, dispatch }) {
-  //   try {
-  //     if (!rootState.auth) {
-  //       return dispatch('LOGGED_OUT', null, { root: true });
-  //     }
-  //     const data = await this.$axios.$get(
-  //       'https://mytotallyrealurl.com/api/collection/',
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${rootState.getters.auth}`,
-  //           Accept: 'application/json',
-  //         },
-  //       }
-  //     );
-
-  //     // need to compare items in state.cards (i.e. local data)
-  //     // with items in data.cards - add/remove/replace as appropriate
-  //     const synchronizedData = data.cards;
-
-  //     commit('SYNC_COLLECTION', synchronizedData);
-  //   } catch (err) {
-  //     console.error('Error:', err);
-  //   }
-  // },
 };
 
 export const mutations = {
   CLEAR_COLLECTION(state) {
     const cardInit = {
       setNumAbbr: '',
-      set: '',
       collector_number: '',
+      set: '',
+      set_name: '',
+      color_identity: [],
+      rarity: '',
+      cmc: null,
       own: false,
       wish: false,
       condition: {
@@ -297,6 +282,8 @@ export const mutations = {
         hpf: 0,
         dmgf: 0,
       },
+      tags: [],
+      comments: '',
     };
 
     Vue.set(state, 'cards', {});

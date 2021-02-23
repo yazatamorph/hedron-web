@@ -67,11 +67,7 @@
             <v-list-item-title>{{ makePrintingInfo() }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <CollectionPanel
-          :card-id="cardId"
-          :set-abbr="card.set"
-          :num="card.collector_number"
-        />
+        <CollectionPanel :card-id="cardId" :card-data="card" />
       </v-sheet>
     </v-col>
   </v-row>
