@@ -7,32 +7,6 @@ export const state = () => ({
   synched: '',
   synchronizing: false,
   autoSync: false,
-  cardInit: {
-    setNumAbbr: '',
-    collector_number: '',
-    name: '',
-    set: '',
-    set_name: '',
-    color_identity: [],
-    rarity: '',
-    cmc: null,
-    own: false,
-    wish: false,
-    condition: {
-      nm: 0,
-      lp: 0,
-      mp: 0,
-      hp: 0,
-      dmg: 0,
-      nmf: 0,
-      lpf: 0,
-      mpf: 0,
-      hpf: 0,
-      dmgf: 0,
-    },
-    tags: [],
-    comments: '',
-  },
   filters: {
     own: true,
     wish: false,
@@ -260,38 +234,11 @@ export const actions = {
 
 export const mutations = {
   CLEAR_COLLECTION(state) {
-    const cardInit = {
-      setNumAbbr: '',
-      collector_number: '',
-      set: '',
-      set_name: '',
-      color_identity: [],
-      rarity: '',
-      cmc: null,
-      own: false,
-      wish: false,
-      condition: {
-        nm: 0,
-        lp: 0,
-        mp: 0,
-        hp: 0,
-        dmg: 0,
-        nmf: 0,
-        lpf: 0,
-        mpf: 0,
-        hpf: 0,
-        dmgf: 0,
-      },
-      tags: [],
-      comments: '',
-    };
-
     Vue.set(state, 'cards', {});
     Vue.set(state, 'updated', '');
     Vue.set(state, 'synched', '');
     Vue.set(state, 'synchronizing', false);
     Vue.set(state, 'autoSync', false);
-    Vue.set(state, 'cardInit', cardInit);
   },
 
   COMMENT_SUBMIT(state, { cID, text }) {

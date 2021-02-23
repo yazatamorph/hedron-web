@@ -248,32 +248,52 @@ export default {
     },
 
     handleCardId(card) {
-      return `${card.set.toUpperCase()}${card.collector_number.toLowerCase()}`;
+      return `${card.set}${card.collector_number}`;
     },
 
     handleCardData(card) {
-      return this.collectionCards[this.handleCardId(card)]
-        ? this.collectionCards[this.handleCardId(card)]
-        : {
-            set: card.set.toLowerCase(),
-            collector_number: card.collector_number,
-            own: false,
-            wish: false,
-            condition: {
-              nm: 0,
-              lp: 0,
-              mp: 0,
-              hp: 0,
-              dmg: 0,
-              nmf: 0,
-              lpf: 0,
-              mpf: 0,
-              hpf: 0,
-              dmgf: 0,
-            },
-            tags: [],
-            comments: '',
-          };
+      if (!this.collectionCards[this.handleCardId(card)]) {
+        const newCard = {
+          setNumAbbr: this.handleCardId(card),
+          collector_number: card.collector_number,
+          name: card.name,
+          set: card.set,
+          set_name: card.set_name,
+          color_identity: card.color_identity,
+          rarity: card.rarity,
+          cmc: card.cmc,
+          own: false,
+          wish: false,
+          condition: {
+            nm: 0,
+            lp: 0,
+            mp: 0,
+            hp: 0,
+            dmg: 0,
+            nmf: 0,
+            lpf: 0,
+            mpf: 0,
+            hpf: 0,
+            dmgf: 0,
+          },
+          tags: [],
+          comments: '',
+        };
+
+        if (card.image_uris && card.image_uris.normal) {
+          newCard.image_uris = card.image_uris;
+        }
+        if (
+          card.card_faces &&
+          card.card_faces.length &&
+          card.card_faces[0].image_uris
+        ) {
+          newCard.card_faces = card.card_faces;
+        }
+
+        return newCard;
+      }
+      return this.collectionCards[this.handleCardId(card)];
     },
   },
 };
