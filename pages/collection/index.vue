@@ -104,19 +104,22 @@ export default {
   },
   watch: {
     filterRootState: {
-      handler: 'handleCollection',
+      handler() {
+        this.currentPage = 1;
+        this.handleCollection();
+      },
       deep: true,
     },
-    filterOwnState: {
-      handler() {
-        this.currentPage = 1;
-      },
-    },
-    filterWishState: {
-      handler() {
-        this.currentPage = 1;
-      },
-    },
+    // filterOwnState: {
+    //   handler() {
+    //     this.currentPage = 1;
+    //   },
+    // },
+    // filterWishState: {
+    //   handler() {
+    //     this.currentPage = 1;
+    //   },
+    // },
   },
   methods: {
     handlePages(pageNumber) {
@@ -151,7 +154,9 @@ export default {
       // 4) resets to first page in case user somehow managed to get past the last page
       this.currentPage =
         this.currentPage > this.totalPages ? 1 : this.currentPage;
-      // 5) chunk filtered results into pages
+      // 5) sorts cards in 'set' order, presumably using blood magic
+      collection.sort(this.sortComparison);
+      // 6) chunk filtered results into pages
       const displayed = this.splitIntoPages(collection);
 
       return displayed;
@@ -206,6 +211,21 @@ export default {
       }
 
       return displayed;
+    },
+    sortComparison(a, b) {
+      if (a.set_name === b.set_name) {
+        if (
+          Number.isNaN(Number(a.collector_number)) ||
+          Number.isNaN(Number(b.collector_number))
+        ) {
+          return a.collector_number > b.collector_number ? 1 : -1;
+        }
+        return (
+          Number.parseFloat(a.collector_number) -
+          Number.parseFloat(b.collector_number)
+        );
+      }
+      return a.set_name > b.set_name ? 1 : -1;
     },
   },
 };
