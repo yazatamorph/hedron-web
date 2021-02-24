@@ -2,8 +2,6 @@
   <div>
     <v-container fluid>
       <v-row>
-        <!-- <v-col cols="3" class="flex-column"> -->
-        <!-- </v-col> -->
         <v-col cols="12"
           ><v-row class="d-flex flex-wrap align-left">
             <v-col
@@ -110,16 +108,6 @@ export default {
       },
       deep: true,
     },
-    // filterOwnState: {
-    //   handler() {
-    //     this.currentPage = 1;
-    //   },
-    // },
-    // filterWishState: {
-    //   handler() {
-    //     this.currentPage = 1;
-    //   },
-    // },
   },
   methods: {
     handlePages(pageNumber) {
