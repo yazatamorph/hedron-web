@@ -31,21 +31,30 @@
               </v-btn>
             </template>
             <v-list>
-              <div v-for="(print, index) in prints" :key="print.id">
-                <v-list-item dense>
-                  <v-list-item-content>
-                    <nuxt-link
-                      :to="`/card/${print.set}/${print.collector_number}`"
-                      style="display: inline-block; text-decoration: none"
-                    >
-                      <v-list-item-subtitle>
-                        {{ `${print.set_name} #${print.collector_number}` }}
-                      </v-list-item-subtitle>
-                    </nuxt-link>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider v-if="index < prints.length - 1"></v-divider>
-              </div>
+              <v-virtual-scroll
+                bench="5"
+                :items="prints"
+                max-height="200"
+                :item-height="40"
+              >
+                <template v-slot:default="{ item }">
+                  <v-list-item dense>
+                    <v-list-item-content>
+                      <nuxt-link
+                        :to="`/card/${item.set}/${item.collector_number}`"
+                        style="display: inline-block; text-decoration: none"
+                      >
+                        <v-list-item-subtitle>
+                          {{ `${item.set_name} #${item.collector_number}` }}
+                        </v-list-item-subtitle>
+                      </nuxt-link>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider
+                    v-if="prints.indexOf(item) < prints.length - 1"
+                  ></v-divider>
+                </template>
+              </v-virtual-scroll>
             </v-list>
           </v-menu>
         </v-col>
