@@ -118,16 +118,16 @@
         <v-btn
           class="mx-1"
           dark
-          :disabled="currentPage === totalPages"
-          :outlined="currentPage === totalPages"
+          :disabled="currentPage >= totalPages"
+          :outlined="currentPage >= totalPages"
           @click="makePages(currentPage + 1)"
           >Next 20</v-btn
         >
         <v-btn
           class="ml-1"
           dark
-          :disabled="currentPage === totalPages"
-          :outlined="currentPage === totalPages"
+          :disabled="currentPage >= totalPages"
+          :outlined="currentPage >= totalPages"
           @click="makePages(totalPages)"
           ><v-icon>mdi-page-last</v-icon></v-btn
         >

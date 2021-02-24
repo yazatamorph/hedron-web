@@ -7,7 +7,7 @@
         <v-col cols="12"
           ><v-row class="d-flex flex-wrap align-left">
             <v-col
-              v-for="(result, index) in results"
+              v-for="(result, index) in handleCollection()"
               :key="`searchResultKey${index}`"
               rows="12"
               sm="4"
@@ -33,14 +33,39 @@
         ></v-col>
       </v-row>
       <v-row>
-        <v-col cols="10" offset="1">
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            :class="totalPages > 1 ? 'd-flex' : 'd-none'"
-            color="grey darken-4"
-            @input="handlePagination"
-          ></v-pagination>
+        <v-col cols="12" class="d-flex justify-center">
+          <v-btn
+            class="mr-1"
+            dark
+            :disabled="currentPage <= 1"
+            :outlined="currentPage <= 1"
+            @click="handlePages(1)"
+            ><v-icon>mdi-page-first</v-icon></v-btn
+          >
+          <v-btn
+            class="mx-1"
+            dark
+            :disabled="currentPage <= 1"
+            :outlined="currentPage <= 1"
+            @click="handlePages(currentPage - 1)"
+            >Previous 20</v-btn
+          >
+          <v-btn
+            class="mx-1"
+            dark
+            :disabled="currentPage >= totalPages"
+            :outlined="currentPage >= totalPages"
+            @click="handlePages(currentPage + 1)"
+            >Next 20</v-btn
+          >
+          <v-btn
+            class="ml-1"
+            dark
+            :disabled="currentPage >= totalPages"
+            :outlined="currentPage >= totalPages"
+            @click="handlePages(totalPages)"
+            ><v-icon>mdi-page-last</v-icon></v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -56,24 +81,15 @@ export default {
   components: {
     CardImage,
   },
-  async fetch() {
-    this.currentPage = this.$route.query.page
-      ? parseInt(this.$route.query.page)
-      : 1;
-    await this.handleSearch();
-  },
   data() {
     return {
       currentPage: 1,
-      decodedQueryString: '',
-      results: [],
       totalPages: 1,
+      totalCards: null,
+      results: [],
     };
   },
   computed: {
-    ...mapState({
-      guid: (state) => state.user.guid,
-    }),
     ...mapState('collection', {
       collectionCards: (state) => state.cards,
       filterRootState: (state) => state.filters,
@@ -88,83 +104,108 @@ export default {
   },
   watch: {
     filterRootState: {
-      handler: 'handleSearch',
+      handler: 'handleCollection',
       deep: true,
+    },
+    filterOwnState: {
+      handler() {
+        this.currentPage = 1;
+      },
+    },
+    filterWishState: {
+      handler() {
+        this.currentPage = 1;
+      },
     },
   },
   methods: {
-    handlePagination(page) {
-      window.$nuxt.$router.push({ query: { page } });
-      this.handleSearch();
+    handlePages(pageNumber) {
+      this.currentPage = pageNumber;
     },
 
-    async handleSearch() {
-      try {
-        const query = {
-          guid: this.guid,
-          page: this.currentPage,
-        };
-
-        // if (!this.$route.query.page) {
-        //   query.page = 1;
-        // }
-
-        if (
-          this.filterSetsState ||
-          this.filterColorsState.length ||
-          this.filterRarityState ||
-          typeof this.filterCMCState === 'number' ||
-          this.filterTagsState.length ||
-          this.filterWishState
-        ) {
-          query.filters = {};
-          if (this.filterSetsState) {
-            query.filters.sets = this.filterSetsState;
-          }
-          if (this.filterColorsState.length) {
-            query.filters.colors = this.filterColorsState;
-          }
-          if (this.filterRarityState.length) {
-            query.filters.rarity = this.filterRarityState;
-          }
-          if (typeof this.filterCMCState === 'number') {
-            query.filters.cmc = this.filterCMCState;
-          }
-          if (this.filterTagsState.length) {
-            query.filters.tags = this.filterTagsState;
-          }
-          if (this.filterWishState) {
-            query.filters.wish = this.filterWishState;
-          }
-        }
-
-        const data = await this.$axios.$post(
-          'http://localhost:3420/api/collection/query',
-          {
-            ...query,
-          }
-        );
-
-        const { results = [], totalPages = 1, currentPage = 1 } = data;
-
-        // if (results.length && results.length === 1) {
-        //   window.$nuxt.$router.push(
-        //     `/card/${results[0].set}/${results[0].collector_number}`
-        //   );
-        // }
-
-        this.results = results;
-        this.totalPages = totalPages;
-
-        if (this.currentPage !== currentPage) {
-          this.currentPage = currentPage;
-        }
-      } catch (err) {
-        console.error(
-          'Problem retrieving detailed collection information!',
-          err
-        );
+    handleCollection() {
+      // 1) starts with entire collection from state
+      let collection = Object.values(this.collectionCards).length
+        ? Object.values(this.collectionCards)
+        : [];
+      // 2) applies active filters
+      collection = this.filteredByWish(collection);
+      if (this.filterSetsState) {
+        collection = this.filteredBySet(collection);
       }
+      if (this.filterColorsState.length) {
+        collection = this.filteredByColors(collection);
+      }
+      if (this.filterRarityState.length) {
+        collection = this.filteredByRarity(collection);
+      }
+      if (typeof this.filterCMCState === 'number') {
+        collection = this.filteredByCMC(collection);
+      }
+      if (this.filterTagsState.length) {
+        collection = this.filteredByTags(collection);
+      }
+      // 3) calculates total number of filtered cards & pages
+      this.totalCards = collection.length;
+      this.totalPages = Math.ceil(this.totalCards / 20);
+      // 4) resets to first page in case user somehow managed to get past the last page
+      this.currentPage =
+        this.currentPage > this.totalPages ? 1 : this.currentPage;
+      // 5) chunk filtered results into pages
+      const displayed = this.splitIntoPages(collection);
+
+      return displayed;
+    },
+    // filter, sort, and pagination helper functions to break the logic into smaller bites
+    filteredByWish(collection) {
+      return this.filterWishState
+        ? collection.filter((card) => card.wish)
+        : collection.filter((card) => card.own);
+    },
+    filteredBySet(collection) {
+      return collection.filter((card) => card.set === this.filterSetsState);
+    },
+    filteredByColors(collection) {
+      return collection.filter((card) =>
+        this.filterColorsState.every((color) => {
+          if (color === 'colorless') {
+            return !card.color_identity.length;
+          }
+          return card.color_identity.includes(color);
+        })
+      );
+    },
+    filteredByRarity(collection) {
+      return collection.filter((card) =>
+        this.filterRarityState.includes(card.rarity)
+      );
+    },
+    filteredByCMC(collection) {
+      return collection.filter((card) => {
+        if (this.filterCMCState === 8) {
+          return card.cmc >= 8;
+        }
+        return card.cmc === this.filterCMCState;
+      });
+    },
+    filteredByTags(collection) {
+      return collection.filter((card) =>
+        this.filterTagsState.every((tag) => card.tags.includes(tag))
+      );
+    },
+    splitIntoPages(collection) {
+      const displayed = [];
+      const startIndex = this.currentPage * 20 - 20;
+      const endIndex =
+        this.currentPage * 20 > this.totalCards
+          ? this.totalCards
+          : this.currentPage * 20;
+
+      for (let i = startIndex; i < endIndex; i++) {
+        displayed.push(collection[i]);
+      }
+
+      return displayed;
     },
   },
 };
