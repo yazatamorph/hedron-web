@@ -24,18 +24,18 @@ export const getters = {
     const sets = [];
     Object.keys(state.cards).forEach((card) => {
       if (
-        !sets.includes(state.cards[card].set) &&
+        !sets.find((elem) => elem[0] === state.cards[card].set) &&
         state.cards[card].set &&
         ((state.cards[card].own &&
           state.cards[card].own === state.filters.own) ||
           (state.cards[card].wish &&
             state.cards[card].wish === state.filters.wish))
       ) {
-        sets.push(state.cards[card].set);
+        sets.push([state.cards[card].set, state.cards[card].set_name]);
       }
     });
     return sortBy(sets, function (i) {
-      return i;
+      return i[1];
     });
   },
   getTags: (state) => {

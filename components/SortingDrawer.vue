@@ -29,7 +29,7 @@
             @change="handleSetFilter(radioSet)"
           >
             <v-list-item v-for="(set, i) in getSets" :key="`setInd${i}`"
-              ><v-radio :label="set.toUpperCase()" :value="set"> </v-radio>
+              ><v-radio :label="set[1]" :value="set[0]"> </v-radio>
             </v-list-item>
           </v-radio-group>
         </v-form>
