@@ -29,7 +29,7 @@
             sm="6"
             class="px-md-4 d-flex flex-wrap justify-space-around"
           >
-            <v-card>
+            <v-card v-if="cardData.nonfoil">
               <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
                 <v-card-title class="text-h6 mt-n2 mb-n2"
                   >Non-Foil</v-card-title
@@ -82,13 +82,23 @@
                 </v-col>
               </v-row>
             </v-card>
+            <v-card
+              v-else
+              class="d-flex align-center justify-center pa-6 pa-sm-10 pa-md-14 mx-auto"
+            >
+              <v-card-subtitle class="text-subtitle-2 text-center"
+                ><em
+                  >This printing does not include a non-foil version.</em
+                ></v-card-subtitle
+              >
+            </v-card>
           </v-col>
           <v-col
             cols="12"
             sm="6"
             class="px-md-4 d-flex flex-wrap justify-space-around"
           >
-            <v-card>
+            <v-card v-if="cardData.foil">
               <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
                 <v-card-title class="text-h6 mt-n2 mb-n2">Foil</v-card-title>
               </v-row>
@@ -138,6 +148,16 @@
                   </v-container>
                 </v-col>
               </v-row>
+            </v-card>
+            <v-card
+              v-else
+              class="d-flex align-center justify-center pa-6 pa-sm-10 pa-md-14 mx-auto"
+            >
+              <v-card-subtitle class="text-subtitle-2 text-center"
+                ><em
+                  >This printing does not include a foil version.</em
+                ></v-card-subtitle
+              >
             </v-card>
           </v-col>
         </v-row>
