@@ -179,11 +179,8 @@ export default {
         this.searchInProgress = true;
 
         let data = await this.$axios.$get(
-          `https://api.scryfall.com/cards/search?order=set&q=${replace(
-            queryParams,
-            /\s/g,
-            '+'
-          )}`
+          `/scry/cards/search?order=set&q=${replace(queryParams, /\s/g, '+')}`,
+          { skipAuthRefresh: true }
         );
         /* eslint-disable camelcase */
         const { total_cards = null } = data;
@@ -194,7 +191,7 @@ export default {
         } = data;
 
         while (has_more) {
-          data = await this.$axios.$get(next_page);
+          data = await this.$axios.$get(next_page, { skipAuthRefresh: true });
           has_more = data.has_more;
           if (data.has_more) {
             next_page = data.next_page;

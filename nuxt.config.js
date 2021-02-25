@@ -6,8 +6,8 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - hedron-mtg-app',
-    title: 'hedron-mtg-app',
+    titleTemplate: '%s - Hedron',
+    title: 'Hedron - a collection manager for Magic: the Gathering',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -20,7 +20,10 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [{ src: '~/plugins/vuex-persist', ssr: false }],
+  plugins: [
+    { src: '~/plugins/vuex-persist', ssr: false },
+    { src: '~/plugins/axios-refresh', ssr: false },
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -40,10 +43,22 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    proxy: true,
+  },
+
+  proxy: {
+    '/account/': 'http://localhost:3666/api',
+    '/collection/': 'http://localhost:3420/api',
+    '/scry/': {
+      target: 'https://api.scryfall.com',
+      pathRewrite: { '^/scry/': '' },
+    },
+  },
 
   // localForage module configuration
   localforage: {

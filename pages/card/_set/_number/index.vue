@@ -42,21 +42,24 @@ export default {
       try {
         this.searchInProgress = true;
         const data = await this.$axios.$get(
-          `https://api.scryfall.com/cards/${this.set}/${this.setNum}`
+          `/scry/cards/${this.set}/${this.setNum}`,
+          { skipAuthRefresh: true }
         );
 
         this.card = data;
 
         await Promise.all([
-          this.$axios.$get(this.card.prints_search_uri).then((res) => {
-            this.prints = res.data.filter(
-              (print) =>
-                this.card.set !== print.set ||
-                this.card.collector_number !== print.collector_number
-            );
-          }),
           this.$axios
-            .$get(`https://api.scryfall.com/sets/${this.card.set}`)
+            .$get(this.card.prints_search_uri, { skipAuthRefresh: true })
+            .then((res) => {
+              this.prints = res.data.filter(
+                (print) =>
+                  this.card.set !== print.set ||
+                  this.card.collector_number !== print.collector_number
+              );
+            }),
+          this.$axios
+            .$get(`/scry/sets/${this.card.set}`, { skipAuthRefresh: true })
             .then((res) => {
               this.setSymbol = res.icon_svg_uri;
             }),

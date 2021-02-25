@@ -212,10 +212,15 @@ export const actions = {
       commit('SYNC_IN_PROGRESS');
 
       const data = await this.$axios.$post(
-        'http://localhost:3420/api/collection/sync/db',
+        '/collection/sync/db',
         {
           guid: rootState.user.guid,
           cards,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${rootState.user.accessToken}`,
+          },
         }
       );
 

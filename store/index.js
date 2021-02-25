@@ -19,10 +19,9 @@ export const actions = {
         throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
       }
 
-      const data = await this.$axios.$post(
-        'http://localhost:3666/api/account/login',
-        credentials
-      );
+      const data = await this.$axios.$post('/account/login', credentials, {
+        skipAuthRefresh: true,
+      });
 
       if (
         !data.guid ||
@@ -47,8 +46,15 @@ export const actions = {
     }
   },
 
-  logOutUser({ commit, dispatch }) {
+  async logOutUser({ commit, dispatch, state }) {
     try {
+      await this.$axios.$post(
+        '/account/logout',
+        {
+          refreshToken: state.user.refreshToken,
+        },
+        { skipAuthRefresh: true }
+      );
       commit('LOG_OUT');
       commit('CLEAR_USER');
       dispatch('collection/clearCollection');
@@ -65,10 +71,9 @@ export const actions = {
         throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
       }
 
-      const data = await this.$axios.$post(
-        'http://localhost:3666/api/account/register',
-        credentials
-      );
+      const data = await this.$axios.$post('/account/register', credentials, {
+        skipAuthRefresh: true,
+      });
 
       if (
         !data.guid ||
@@ -92,6 +97,10 @@ export const actions = {
       commit('CLEAR_USER');
       console.error('Problem registering user!', err);
     }
+  },
+
+  refreshedAccessToken({ commit }, token) {
+    commit('SET_ACCESS_TOKEN', token);
   },
 };
 
