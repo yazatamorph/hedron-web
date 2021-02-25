@@ -7,7 +7,6 @@ export default ({ $axios, store }) => {
         refreshToken: store.state.user.refreshToken,
       })
       .then((data) => {
-        console.log(data);
         store.dispatch('refreshedAccessToken', data.accessToken);
         failedRequest.response.config.headers.Authorization = `Bearer ${data.accessToken}`;
         return Promise.resolve();
