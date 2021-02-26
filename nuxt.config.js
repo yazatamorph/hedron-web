@@ -52,8 +52,8 @@ export default {
   },
 
   proxy: {
-    '/account/': 'http://localhost:3666/api',
-    '/collection/': 'http://localhost:3420/api',
+    '/account/': 'https://hedronarchive.com/api',
+    '/collection/': 'http://hedronarchive.com/api',
     '/scry/': {
       target: 'https://api.scryfall.com',
       pathRewrite: { '^/scry/': '' },
