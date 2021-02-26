@@ -19,7 +19,7 @@ export const actions = {
         throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
       }
 
-      const data = await this.$axios.$post('/account/login', credentials, {
+      const data = await this.$axios.$post('/api/account/login', credentials, {
         skipAuthRefresh: true,
       });
 
@@ -49,7 +49,7 @@ export const actions = {
   async logOutUser({ commit, dispatch, state }) {
     try {
       await this.$axios.$post(
-        '/account/logout',
+        '/api/account/logout',
         {
           refreshToken: state.user.refreshToken,
         },
@@ -71,9 +71,13 @@ export const actions = {
         throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
       }
 
-      const data = await this.$axios.$post('/account/register', credentials, {
-        skipAuthRefresh: true,
-      });
+      const data = await this.$axios.$post(
+        '/api/account/register',
+        credentials,
+        {
+          skipAuthRefresh: true,
+        }
+      );
 
       if (
         !data.guid ||

@@ -42,7 +42,7 @@ export default {
       try {
         this.searchInProgress = true;
         const data = await this.$axios.$get(
-          `/scry/cards/${this.set}/${this.setNum}`,
+          `https://api.scryfall.com/cards/${this.set}/${this.setNum}`,
           { skipAuthRefresh: true }
         );
 
@@ -59,7 +59,9 @@ export default {
               );
             }),
           this.$axios
-            .$get(`/scry/sets/${this.card.set}`, { skipAuthRefresh: true })
+            .$get(`https://api.scryfall.com/sets/${this.card.set}`, {
+              skipAuthRefresh: true,
+            })
             .then((res) => {
               this.setSymbol = res.icon_svg_uri;
             }),

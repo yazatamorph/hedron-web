@@ -3,7 +3,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 export default ({ $axios, store }) => {
   const refreshLogic = (failedRequest) =>
     $axios
-      .$post('/account/refresh', {
+      .$post('/api/account/refresh', {
         refreshToken: store.state.user.refreshToken,
       })
       .then((data) => {

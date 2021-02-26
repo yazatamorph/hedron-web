@@ -212,7 +212,7 @@ export const actions = {
       commit('SYNC_IN_PROGRESS');
 
       const data = await this.$axios.$post(
-        '/collection/sync/db',
+        '/api/collection/sync/db',
         {
           guid: rootState.user.guid,
           cards,

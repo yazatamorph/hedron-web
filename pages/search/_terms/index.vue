@@ -179,7 +179,11 @@ export default {
         this.searchInProgress = true;
 
         let data = await this.$axios.$get(
-          `/scry/cards/search?order=set&q=${replace(queryParams, /\s/g, '+')}`,
+          `https://api.scryfall.com/cards/search?order=set&q=${replace(
+            queryParams,
+            /\s/g,
+            '+'
+          )}`,
           { skipAuthRefresh: true }
         );
         /* eslint-disable camelcase */
