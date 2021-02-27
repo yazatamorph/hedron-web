@@ -1,18 +1,6 @@
 <template>
   <div>
     <v-list-item>
-      <v-list-item-subtitle>Keep Synchronized</v-list-item-subtitle>
-      <v-list-item-action>
-        <v-switch
-          :input-value="autoSync"
-          inset
-          color="teal accent-2"
-          @change="handleAutoSyncToggle"
-        ></v-switch>
-      </v-list-item-action>
-    </v-list-item>
-
-    <v-list-item>
       <v-list-item-subtitle>Sync Now</v-list-item-subtitle>
       <v-list-item-action>
         <v-btn
@@ -32,7 +20,7 @@
 import { mapActions, mapState } from 'vuex';
 
 export default {
-  name: 'SyncSettings',
+  name: 'SyncButton',
   computed: {
     ...mapState('collection', {
       autoSync: (state) => state.autoSync,
