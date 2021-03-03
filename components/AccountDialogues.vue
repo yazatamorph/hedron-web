@@ -48,6 +48,7 @@
                         :rules="[rules.required]"
                         type="password"
                         required
+                        @keyup.enter="handleLogin"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -104,7 +105,7 @@
                         v-model="inputEmail"
                         label="Email"
                         outlined
-                        :rules="[rules.required, rules.email]"
+                        :rules="[rules.email, rules.required]"
                         required
                       ></v-text-field>
                     </v-col>
@@ -114,9 +115,9 @@
                         label="Password"
                         outlined
                         type="password"
-                        hint="Passwords must be eight or more characters in length and include at least one upper case letter, one lower case letter, one number, and one symbol (e.g. _!@#/)"
+                        hint="Passwords must be a minimum of eight characters and include at least one upper case letter, one lower case letter, one number, and one symbol (e.g. _-!@#/)"
                         persistent-hint
-                        :rules="[rules.required]"
+                        :rules="[rules.passRequired]"
                         required
                       ></v-text-field>
                     </v-col>
@@ -169,6 +170,9 @@ export default {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || 'Invalid Email.';
         },
+        passRequired: (value) =>
+          !!value ||
+          'Passwords must be a minimum of eight characters and include at least one upper case letter, one lower case letter, one number, and one symbol (e.g. _-!@#/)',
         required: (value) => !!value || 'Required.',
       },
     };
