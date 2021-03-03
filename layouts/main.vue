@@ -27,7 +27,7 @@
           class="mr-4"
           max-height="48"
           max-width="48"
-          src="/hedron.png"
+          src="/icon.png"
         ></v-img
       ></router-link>
       <v-btn color="white" text to="/">Hedron</v-btn>
