@@ -62,7 +62,7 @@ export const getters = {
 
 export const actions = {
   addToCollection({ commit }, { cID, cardData, op }) {
-    // op = 'own' or 'wish'
+    // op is either 'own' or 'wish'
     cardData[op] = true;
 
     commit('UPDATE_COLLECTION', { cID, cardData });
@@ -211,18 +211,9 @@ export const actions = {
             );
       commit('SYNC_IN_PROGRESS');
 
-      const data = await this.$axios.$post(
-        '/api/collection/sync/db',
-        {
-          // guid: rootState.user.guid,
-          cards,
-        }
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${rootState.user.accessToken}`,
-        //   },
-        // }
-      );
+      const data = await this.$axios.$post('/api/collection/sync/db', {
+        cards,
+      });
 
       commit('SYNC_COLLECTION_FROM_DB', data.cards);
 
