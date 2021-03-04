@@ -18,7 +18,7 @@
               <v-card-title>
                 <v-list-item>
                   <v-list-item-avatar>
-                    <img src="/hedron.png" />
+                    <img src="/icon.png" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="headline"
@@ -85,7 +85,7 @@
               <v-card-title>
                 <v-list-item>
                   <v-list-item-avatar>
-                    <img src="/hedron.png" />
+                    <img src="/icon.png" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="headline"

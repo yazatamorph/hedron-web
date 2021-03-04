@@ -18,10 +18,6 @@
       fixed
       app
     >
-      <!-- <v-app-bar-nav-icon
-        v-if="loggedIn && guid"
-        @click.stop="collectOpts = !collectOpts"
-      /> -->
       <router-link to="/"
         ><v-img
           class="mr-4"
