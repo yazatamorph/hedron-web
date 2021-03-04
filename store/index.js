@@ -3,8 +3,6 @@ import Vue from 'vue';
 export const state = () => ({
   loggedIn: false,
   user: {
-    accessToken: '',
-    refreshToken: '',
     email: '',
     guid: '',
   },
@@ -24,19 +22,20 @@ export const actions = {
       });
 
       if (
-        !data.guid ||
-        !data.email ||
-        !data.accessToken ||
-        !data.refreshToken
+        !data.user ||
+        !data.user.guid ||
+        !data.user.email
+        // !data.accessToken ||
+        // !data.refreshToken
       ) {
         throw new Error('LOGIN_CREDENTIALS_INVALID');
       }
       // COMMIT USER DATA
       commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.guid);
-      commit('SET_EMAIL', data.email);
-      commit('SET_ACCESS_TOKEN', data.accessToken);
-      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      commit('SET_GUID', data.user.guid);
+      commit('SET_EMAIL', data.user.email);
+      // commit('SET_ACCESS_TOKEN', data.accessToken);
+      // commit('SET_REFRESH_TOKEN', data.refreshToken);
       // DISPATCH COLLECTION SYNC ACTION
       dispatch('collection/syncWithDb');
     } catch (err) {
@@ -51,7 +50,7 @@ export const actions = {
       await this.$axios.$post(
         '/api/account/logout',
         {
-          refreshToken: state.user.refreshToken,
+          // refreshToken: state.user.refreshToken,
         },
         { skipAuthRefresh: true }
       );
@@ -80,19 +79,20 @@ export const actions = {
       );
 
       if (
-        !data.guid ||
-        !data.email ||
-        !data.accessToken ||
-        !data.refreshToken
+        !data.user ||
+        !data.user.guid ||
+        !data.user.email
+        // !data.accessToken ||
+        // !data.refreshToken
       ) {
         throw new Error('REGISTER_CREDENTIALS_INVALID');
       }
       // COMMIT USER DATA
       commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.guid);
-      commit('SET_EMAIL', data.email);
-      commit('SET_ACCESS_TOKEN', data.accessToken);
-      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      commit('SET_GUID', data.user.guid);
+      commit('SET_EMAIL', data.user.email);
+      // commit('SET_ACCESS_TOKEN', data.accessToken);
+      // commit('SET_REFRESH_TOKEN', data.refreshToken);
       // DISPATCH COLLECTION SYNC ACTION
       // This creates the new user's collection document
       dispatch('collection/syncWithDb');
@@ -111,8 +111,8 @@ export const actions = {
 export const mutations = {
   CLEAR_USER(state) {
     const clearUser = {
-      accessToken: '',
-      refreshToken: '',
+      // accessToken: '',
+      // refreshToken: '',
       email: '',
       guid: '',
     };
@@ -131,9 +131,9 @@ export const mutations = {
     Vue.set(state, 'loggedIn', false);
   },
 
-  SET_ACCESS_TOKEN(state, accessToken) {
-    Vue.set(state.user, 'accessToken', accessToken);
-  },
+  // SET_ACCESS_TOKEN(state, accessToken) {
+  //   Vue.set(state.user, 'accessToken', accessToken);
+  // },
 
   SET_EMAIL(state, email) {
     Vue.set(state.user, 'email', email);
@@ -143,7 +143,7 @@ export const mutations = {
     Vue.set(state.user, 'guid', guid);
   },
 
-  SET_REFRESH_TOKEN(state, refreshToken) {
-    Vue.set(state.user, 'refreshToken', refreshToken);
-  },
+  // SET_REFRESH_TOKEN(state, refreshToken) {
+  //   Vue.set(state.user, 'refreshToken', refreshToken);
+  // },
 };

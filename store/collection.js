@@ -214,14 +214,14 @@ export const actions = {
       const data = await this.$axios.$post(
         '/api/collection/sync/db',
         {
-          guid: rootState.user.guid,
+          // guid: rootState.user.guid,
           cards,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${rootState.user.accessToken}`,
-          },
         }
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${rootState.user.accessToken}`,
+        //   },
+        // }
       );
 
       commit('SYNC_COLLECTION_FROM_DB', data.cards);
