@@ -25,7 +25,6 @@
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/pwa": "^3.0.2",
-    "axios-auth-refresh": "^3.1.0",
     "core-js": "^3.6.5",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",

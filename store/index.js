@@ -3,8 +3,6 @@ import Vue from 'vue';
 export const state = () => ({
   loggedIn: false,
   user: {
-    accessToken: '',
-    refreshToken: '',
     email: '',
     guid: '',
   },
@@ -19,24 +17,15 @@ export const actions = {
         throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
       }
 
-      const data = await this.$axios.$post('/api/account/login', credentials, {
-        skipAuthRefresh: true,
-      });
+      const data = await this.$axios.$post('/api/account/login', credentials);
 
-      if (
-        !data.guid ||
-        !data.email ||
-        !data.accessToken ||
-        !data.refreshToken
-      ) {
+      if (!data.user || !data.user.guid || !data.user.email) {
         throw new Error('LOGIN_CREDENTIALS_INVALID');
       }
       // COMMIT USER DATA
       commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.guid);
-      commit('SET_EMAIL', data.email);
-      commit('SET_ACCESS_TOKEN', data.accessToken);
-      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      commit('SET_GUID', data.user.guid);
+      commit('SET_EMAIL', data.user.email);
       // DISPATCH COLLECTION SYNC ACTION
       dispatch('collection/syncWithDb');
     } catch (err) {
@@ -48,13 +37,7 @@ export const actions = {
 
   async logOutUser({ commit, dispatch, state }) {
     try {
-      await this.$axios.$post(
-        '/api/account/logout',
-        {
-          refreshToken: state.user.refreshToken,
-        },
-        { skipAuthRefresh: true }
-      );
+      await this.$axios.$get('/api/account/logout');
       commit('LOG_OUT');
       commit('CLEAR_USER');
       dispatch('collection/clearCollection');
@@ -73,26 +56,16 @@ export const actions = {
 
       const data = await this.$axios.$post(
         '/api/account/register',
-        credentials,
-        {
-          skipAuthRefresh: true,
-        }
+        credentials
       );
 
-      if (
-        !data.guid ||
-        !data.email ||
-        !data.accessToken ||
-        !data.refreshToken
-      ) {
+      if (!data.user || !data.user.guid || !data.user.email) {
         throw new Error('REGISTER_CREDENTIALS_INVALID');
       }
       // COMMIT USER DATA
       commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.guid);
-      commit('SET_EMAIL', data.email);
-      commit('SET_ACCESS_TOKEN', data.accessToken);
-      commit('SET_REFRESH_TOKEN', data.refreshToken);
+      commit('SET_GUID', data.user.guid);
+      commit('SET_EMAIL', data.user.email);
       // DISPATCH COLLECTION SYNC ACTION
       // This creates the new user's collection document
       dispatch('collection/syncWithDb');
@@ -111,8 +84,6 @@ export const actions = {
 export const mutations = {
   CLEAR_USER(state) {
     const clearUser = {
-      accessToken: '',
-      refreshToken: '',
       email: '',
       guid: '',
     };
@@ -131,19 +102,11 @@ export const mutations = {
     Vue.set(state, 'loggedIn', false);
   },
 
-  SET_ACCESS_TOKEN(state, accessToken) {
-    Vue.set(state.user, 'accessToken', accessToken);
-  },
-
   SET_EMAIL(state, email) {
     Vue.set(state.user, 'email', email);
   },
 
   SET_GUID(state, guid) {
     Vue.set(state.user, 'guid', guid);
-  },
-
-  SET_REFRESH_TOKEN(state, refreshToken) {
-    Vue.set(state.user, 'refreshToken', refreshToken);
   },
 };
