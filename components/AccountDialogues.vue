@@ -212,8 +212,8 @@ export default {
       }
     },
 
-    async handleLogout() {
-      await this.syncWithDb();
+    handleLogout() {
+      // await this.syncWithDb();
       this.logOutUser();
     },
 
