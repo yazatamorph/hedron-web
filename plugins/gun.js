@@ -5,7 +5,7 @@ import Gun from 'gun';
 import SEA from 'gun/sea';
 
 export default ({ app }, inject) => {
-  const gun = Gun();
+  const gun = Gun('https://hedronarchive.com/gun');
   // 'http://localhost:8765/gun',
   // // Example of peers for production
   // // ['https://hedronarchive.com/gun', 'http://localhost:8765/gun'],
