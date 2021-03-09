@@ -162,7 +162,6 @@ export const actions = {
       if (update.key) {
         this.$user.get('cards').get(update.key).put(JSON.stringify(update));
       } else {
-        console.log('Update:', update);
         this.$user.get('cards').set(JSON.stringify(update));
       }
       commit('STORE_UPDATE_CARD', update);
