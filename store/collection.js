@@ -3,10 +3,6 @@ import sortBy from 'lodash/sortBy';
 
 export const state = () => ({
   cards: {},
-  updated: '',
-  synched: '',
-  synchronizing: false,
-  autoSync: false,
   filters: {
     own: true,
     wish: false,
@@ -22,6 +18,7 @@ export const getters = {
   getAllCards: (state) => state.cards,
   getSets: (state) => {
     const sets = [];
+    // this is so inefficient lol
     Object.keys(state.cards).forEach((card) => {
       if (
         !sets.find((elem) => elem[0] === state.cards[card].set) &&
@@ -51,13 +48,6 @@ export const getters = {
       return i;
     });
   },
-  timeSinceSync: (state) => {
-    if (!state.synched || !state.updated) {
-      return 0;
-    } else {
-      return Date.parse(state.updated) - Date.parse(state.synched);
-    }
-  },
 };
 
 export const actions = {
@@ -67,10 +57,6 @@ export const actions = {
 
     commit('UPDATE_COLLECTION', { cID, cardData });
     commit('UPDATE_TIMESTAMP');
-  },
-
-  changeAutoSync({ commit }, bool) {
-    commit('UPDATE_AUTO_SYNC', bool);
   },
 
   changeComments({ commit }, { cID, text }) {
@@ -200,7 +186,7 @@ export const actions = {
   filterWish({ commit }) {
     commit('FILTER_WISH');
   },
-
+  // TODO: whole function needs replacing
   async syncWithDb({ commit, state, rootState }, update) {
     try {
       const cards =

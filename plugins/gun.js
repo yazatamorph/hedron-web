@@ -8,13 +8,12 @@ export default ({ app }, inject) => {
     // ['https://hedronarchive.com/gun', 'http://localhost:8765/gun'],
     {
       // S3 or other adapter will be used in production
+      // but only needs to be set on server
       // s3: {
       //   key: '',
       //   secret: '',
       //   bucket: '',
       // },
-      // File storage used for development
-      file: './gun/store.json',
     }
   );
 
