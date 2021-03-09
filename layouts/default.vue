@@ -45,7 +45,7 @@ export default {
     AccountDialogues,
     // AccountMenu,
   },
-  middleware: 'storeRestored',
+  // middleware: 'storeRestored',
   data() {
     return {
       appBarSearch: '',

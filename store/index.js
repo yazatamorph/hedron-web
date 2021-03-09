@@ -23,8 +23,8 @@ export const actions = {
       } else {
         commit('LOG_IN_SUCCESS');
         commit('SET_EMAIL', email);
-        // request data sync
-        // dispatch('collection/syncWithDb');
+        // start data sync
+        dispatch('collection/dbSubscribe');
       }
     });
   },

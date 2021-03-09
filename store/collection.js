@@ -51,53 +51,61 @@ export const getters = {
 };
 
 export const actions = {
-  addToCollection({ commit }, { cID, cardData, op }) {
+  // NOTE: logic actions
+  addToCollection({ dispatch }, { cardData, op }) {
+    const update = { ...cardData };
     // op is either 'own' or 'wish'
-    cardData[op] = true;
+    update[op] = true;
 
-    commit('UPDATE_COLLECTION', { cID, cardData });
-    commit('UPDATE_TIMESTAMP');
+    dispatch('dbUpdate', update);
   },
 
-  changeComments({ commit }, { cID, text }) {
-    commit('COMMENT_SUBMIT', { cID, text });
-    commit('UPDATE_TIMESTAMP', cID);
+  changeComments({ dispatch, state }, { cID, text }) {
+    const update = getNoReact(state.cards[cID]);
+    update.comments = text;
+    dispatch('dbUpdate', update);
   },
 
-  changeOwn({ commit, dispatch, state }, { cID, cardData }) {
+  changeOwn({ dispatch, state }, { cID, cardData }) {
     if (!state.cards[cID]) {
       dispatch('addToCollection', { cID, cardData, op: 'own' });
     } else {
-      commit('OWN_SWITCH', cID);
-      commit('UPDATE_TIMESTAMP', cID);
+      const update = getNoReact(state.cards[cID]);
+      update.own = !update.own;
+      dispatch('dbUpdate', update);
     }
   },
 
-  changeQuantity({ commit }, { cID, con, op }) {
+  changeQuantity({ dispatch, state }, { cID, con, op }) {
+    const update = getNoReact(state.cards[cID]);
     if (op === 'add') {
-      commit('QUANTITY_INCREMENT', { cID, con });
+      update.condition[con] =
+        update.condition[con] >= 0 ? update.condition[con] + 1 : 1;
     } else if (op === 'subtract') {
-      commit('QUANTITY_DECREMENT', { cID, con });
+      update.condition[con] > 0
+        ? (update.condition[con] -= 1)
+        : (update.condition[con] = 0);
     }
-    commit('UPDATE_TIMESTAMP', cID);
+    dispatch('dbUpdate', update);
   },
 
-  changeTags({ commit }, { cID, tag, op }) {
-    if (op === 'submit') {
-      commit('TAG_SUBMIT', { cID, tag });
-    }
+  changeTags({ dispatch, state }, { cID, tag, op }) {
+    const update = getNoReact(state.cards[cID]);
+    if (op === 'submit') update.tags.push(tag);
     if (op === 'delete') {
-      commit('TAG_DELETE', { cID, tag });
+      const i = update.tags.indexOf(tag);
+      update.tags.splice(i, 1);
     }
-    commit('UPDATE_TIMESTAMP', cID);
+    dispatch('dbUpdate', update);
   },
 
-  changeWish({ commit, dispatch, state }, { cID, cardData }) {
+  changeWish({ dispatch, state }, { cID, cardData }) {
     if (!state.cards[cID]) {
       dispatch('addToCollection', { cID, cardData, op: 'wish' });
     } else {
-      commit('WISH_SWITCH', cID);
-      commit('UPDATE_TIMESTAMP', cID);
+      const update = getNoReact(state.cards[cID]);
+      update.wish = !update.wish;
+      dispatch('dbUpdate', update);
     }
   },
 
@@ -105,7 +113,62 @@ export const actions = {
     commit('CLEAR_COLLECTION');
     commit('FILTER_RESET_ALL');
   },
+  // NOTE: DB actions
+  // pulls data from DB and listens for ongoing changes
+  dbSubscribe({ commit }) {
+    if (this.$user.is) {
+      this.$user
+        .get('cards')
+        .map()
+        // callback is executed on every update event
+        // NOTE: there may be more than one event per item
+        .on((data, key) => {
+          const card = JSON.parse(data);
+          if (!card) {
+            commit('DB_REMOVED_CARD', key);
+          } else {
+            const update = {
+              key,
+              setNumAbbr: card.setNumAbbr,
+              collector_number: card.collector_number,
+              name: card.name,
+              set: card.set,
+              set_name: card.set_name,
+              color_identity: card.color_identity,
+              rarity: card.rarity,
+              cmc: card.cmc,
+              own: card.own,
+              wish: card.wish,
+              condition: card.condition,
+              tags: card.tags,
+              comments: card.comments,
+            };
 
+            if (card?.image_uris?.normal) {
+              update.image_uris = card.image_uris;
+            }
+            if (card?.card_faces?.[0]?.image_uris) {
+              update.card_faces = card.card_faces;
+            }
+            commit('STORE_UPDATE_CARD', update);
+          }
+        });
+    }
+  },
+  // inserts or updates card in store & DB
+  // all client-initiated card updates should go through here
+  dbUpdate({ commit }, update) {
+    if (this.$user.is) {
+      if (update.key) {
+        this.$user.get('cards').get(update.key).put(JSON.stringify(update));
+      } else {
+        console.log('Update:', update);
+        this.$user.get('cards').set(JSON.stringify(update));
+      }
+      commit('STORE_UPDATE_CARD', update);
+    }
+  },
+  // NOTE: filter actions
   filterCMC({ commit, state }, { cmc }) {
     if (state.filters.cmc === cmc) {
       commit('FILTER_CMC_REMOVE');
@@ -186,45 +249,21 @@ export const actions = {
   filterWish({ commit }) {
     commit('FILTER_WISH');
   },
-  // TODO: whole function needs replacing
-  async syncWithDb({ commit, state, rootState }, update) {
-    try {
-      const cards =
-        update && update.length
-          ? update
-          : Object.values(state.cards).filter(
-              (card) => card.set && card.collector_number
-            );
-      commit('SYNC_IN_PROGRESS');
-
-      const data = await this.$axios.$post('/api/collection/sync/db', {
-        cards,
-      });
-
-      commit('SYNC_COLLECTION_FROM_DB', data.cards);
-
-      commit('SYNC_COMPLETE');
-      commit('UPDATE_SYNCHED', true);
-      commit('UPDATE_TIMESTAMP');
-    } catch (err) {
-      commit('SYNC_COMPLETE');
-      commit('UPDATE_SYNCHED');
-      console.error('Problem synchronizing card data!', err);
-    }
-  },
 };
 
 export const mutations = {
-  CLEAR_COLLECTION(state) {
-    Vue.set(state, 'cards', {});
-    Vue.set(state, 'updated', '');
-    Vue.set(state, 'synched', '');
-    Vue.set(state, 'synchronizing', false);
-    Vue.set(state, 'autoSync', false);
+  // handles removing a card that was deleted from the DB
+  DB_REMOVED_CARD(state, key) {
+    const card = Object.values(state.cards).find((c) => c.key === key);
+    Vue.set(state.cards, card.setNumAbbr, null);
+  },
+  // all non-deletion updates to cards should go through this mutation
+  STORE_UPDATE_CARD(state, update) {
+    Vue.set(state.cards, update.setNumAbbr, update);
   },
 
-  COMMENT_SUBMIT(state, { cID, text }) {
-    Vue.set(state.cards[cID], 'comments', text);
+  CLEAR_COLLECTION(state) {
+    Vue.set(state, 'cards', {});
   },
 
   FILTER_OWN(state) {
@@ -293,81 +332,62 @@ export const mutations = {
       Vue.set(state.filters, 'own', true);
     }
   },
-
-  OWN_SWITCH(state, cID) {
-    Vue.set(state.cards[cID], 'own', !state.cards[cID].own);
-  },
-
-  QUANTITY_DECREMENT(state, { cID, con }) {
-    if (state.cards[cID].condition[con] > 0) {
-      Vue.set(
-        state.cards[cID].condition,
-        con,
-        state.cards[cID].condition[con] - 1
-      );
-      return;
-    }
-    Vue.set(state.cards[cID].condition, con, 0);
-  },
-
-  QUANTITY_INCREMENT(state, { cID, con }) {
-    if (state.cards[cID].condition[con] >= 0) {
-      Vue.set(
-        state.cards[cID].condition,
-        con,
-        state.cards[cID].condition[con] + 1
-      );
-      return;
-    }
-    Vue.set(state.cards[cID].condition, con, 1);
-  },
-
-  SYNC_COLLECTION_FROM_DB(state, cards) {
-    Vue.set(state, 'cards', cards);
-  },
-
-  SYNC_COMPLETE(state) {
-    Vue.set(state, 'synchronizing', false);
-  },
-
-  SYNC_IN_PROGRESS(state) {
-    Vue.set(state, 'synchronizing', true);
-  },
-
-  TAG_DELETE(state, { cID, tag }) {
-    const i = state.cards[cID].tags.indexOf(tag);
-    state.cards[cID].tags.splice(i, 1);
-  },
-
-  TAG_SUBMIT(state, { cID, tag }) {
-    Vue.set(state.cards[cID], 'tags', [...state.cards[cID].tags, tag]);
-  },
-
-  UPDATE_AUTO_SYNC(state, bool) {
-    Vue.set(state, 'autoSync', bool);
-  },
-
-  UPDATE_COLLECTION(state, { cID, cardData }) {
-    Vue.set(state.cards, cID, cardData);
-  },
-
-  UPDATE_SYNCHED(state, success) {
-    if (!success) {
-      Vue.set(state, 'synched', '');
-    } else {
-      Vue.set(state, 'synched', new Date());
-    }
-  },
-
-  UPDATE_TIMESTAMP(state, cID) {
-    const date = new Date();
-    if (cID) {
-      Vue.set(state.cards[cID], 'updatedAt', date);
-    }
-    state.updated = date;
-  },
-
-  WISH_SWITCH(state, cID) {
-    Vue.set(state.cards[cID], 'wish', !state.cards[cID].wish);
-  },
 };
+
+// Stupid hack to make vuex stop yelling about direct mutations that aren't really happening
+// because of reactive getters/setters in the 'condition' object and 'tags' array
+const getNoReact = (input) => {
+  /* eslint-disable camelcase */
+  const {
+    key,
+    setNumAbbr,
+    collector_number,
+    name,
+    set,
+    set_name,
+    color_identity,
+    rarity,
+    cmc,
+    own,
+    wish,
+    comments,
+    condition,
+    tags,
+  } = input;
+  const output = {
+    key,
+    setNumAbbr,
+    collector_number,
+    name,
+    set,
+    set_name,
+    color_identity,
+    rarity,
+    cmc,
+    own,
+    wish,
+    comments,
+    condition: {
+      nm: condition.nm,
+      lp: condition.lp,
+      mp: condition.mp,
+      hp: condition.hp,
+      dmg: condition.dmg,
+      nmf: condition.nmf,
+      lpf: condition.lpf,
+      mpf: condition.mpf,
+      hpf: condition.hpf,
+      dmgf: condition.dmgf,
+    },
+    tags: [...tags],
+  };
+
+  if (input?.image_uris?.normal) {
+    output.image_uris = input.image_uris;
+  }
+  if (input?.card_faces?.[0]?.image_uris) {
+    output.card_faces = input.card_faces;
+  }
+  return output;
+};
+/* eslint-enable camelcase */

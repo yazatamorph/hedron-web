@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      v-if="loggedIn && guid"
+      v-if="loggedIn"
       v-model="collectOpts"
       color="transparent"
       dark
@@ -75,7 +75,7 @@ export default {
     // AccountMenu,
     SortingDrawer,
   },
-  middleware: 'storeRestored',
+  // middleware: 'storeRestored',
   data() {
     return {
       appBarSearch: '',
