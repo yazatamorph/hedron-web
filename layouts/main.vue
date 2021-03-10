@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      v-if="loggedIn && guid"
+      v-if="loggedIn"
       v-model="collectOpts"
       color="transparent"
       dark
@@ -43,14 +43,7 @@
         @keydown.enter="handleSearch"
       >
       </v-text-field>
-      <!-- <v-menu offset-y bottom left :close-on-content-click="false">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn dark icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template> -->
       <AccountDialogues :is-dark="true" />
-      <!-- </v-menu> -->
     </v-app-bar>
     <v-main class="bg-gradient">
       <v-container>
@@ -66,16 +59,13 @@
 <script>
 import { mapState } from 'vuex';
 import AccountDialogues from '~/components/AccountDialogues';
-// import AccountMenu from '~/components/AccountMenu';
 import SortingDrawer from '~/components/SortingDrawer';
 
 export default {
   components: {
     AccountDialogues,
-    // AccountMenu,
     SortingDrawer,
   },
-  middleware: 'storeRestored',
   data() {
     return {
       appBarSearch: '',

@@ -182,6 +182,16 @@ export default {
       loggedIn: (state) => state.loggedIn,
     }),
   },
+  watch: {
+    loggedIn: {
+      handler() {
+        if (this.loggedIn) {
+          this.inputEmail = '';
+          this.inputPassword = '';
+        }
+      },
+    },
+  },
   methods: {
     ...mapActions(['logInUser', 'logOutUser', 'registerUser']),
     ...mapActions('collection', ['syncWithDb']),
@@ -196,15 +206,12 @@ export default {
       this.inputPassword = '';
     },
 
-    async handleLogin() {
+    handleLogin() {
       try {
-        await this.logInUser({
+        this.logInUser({
           email: this.inputEmail,
           password: this.inputPassword,
         });
-
-        this.inputEmail = '';
-        this.inputPassword = '';
       } catch (err) {
         console.error('Problem with handleLogin');
         this.inputEmail = '';
@@ -212,20 +219,16 @@ export default {
       }
     },
 
-    async handleLogout() {
-      await this.syncWithDb();
+    handleLogout() {
       this.logOutUser();
     },
 
-    async handleRegister() {
+    handleRegister() {
       try {
-        await this.registerUser({
+        this.registerUser({
           email: this.inputEmail,
           password: this.inputPassword,
         });
-
-        this.inputEmail = '';
-        this.inputPassword = '';
       } catch (err) {
         console.error('Problem with handleRegister');
         this.inputEmail = '';

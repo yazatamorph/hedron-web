@@ -4,80 +4,59 @@ export const state = () => ({
   loggedIn: false,
   user: {
     email: '',
-    guid: '',
   },
 });
 
 export const getters = {};
 
 export const actions = {
-  async logInUser({ commit, dispatch }, credentials) {
-    try {
-      if (!credentials.email || !credentials.password) {
-        throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
-      }
-
-      const data = await this.$axios.$post('/api/account/login', credentials);
-
-      if (!data.user || !data.user.guid || !data.user.email) {
-        throw new Error('LOGIN_CREDENTIALS_INVALID');
-      }
-      // COMMIT USER DATA
-      commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.user.guid);
-      commit('SET_EMAIL', data.user.email);
-      // DISPATCH COLLECTION SYNC ACTION
-      dispatch('collection/syncWithDb');
-    } catch (err) {
-      commit('LOG_IN_FAILED');
-      commit('CLEAR_USER');
-      console.error('Problem logging in!', err);
+  logInUser({ commit, dispatch }, { email, password }) {
+    if (!email || !password) {
+      throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
     }
+
+    this.$user.auth(email, password, (ack) => {
+      if (ack.err) {
+        commit('LOG_IN_FAILED');
+        commit('CLEAR_USER');
+        console.error('Problem logging in!', ack.err);
+      } else {
+        commit('LOG_IN_SUCCESS');
+        commit('SET_EMAIL', email);
+        // start data sync
+        dispatch('collection/dbSubscribe');
+      }
+    });
   },
 
-  async logOutUser({ commit, dispatch, state }) {
-    try {
-      await this.$axios.$get('/api/account/logout');
+  logOutUser({ commit, dispatch, state }) {
+    this.$user.leave();
+    if (!this.$user.is) {
       commit('LOG_OUT');
       commit('CLEAR_USER');
       dispatch('collection/clearCollection');
-    } catch (err) {
-      console.error('Problem logging out!', err);
+    } else {
+      console.error('Unknown problem logging out?!');
       commit('LOG_OUT');
       commit('CLEAR_USER');
+      dispatch('collection/clearCollection');
     }
   },
 
-  async registerUser({ commit, dispatch }, credentials) {
-    try {
-      if (!credentials.email || !credentials.password) {
-        throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
-      }
-
-      const data = await this.$axios.$post(
-        '/api/account/register',
-        credentials
-      );
-
-      if (!data.user || !data.user.guid || !data.user.email) {
-        throw new Error('REGISTER_CREDENTIALS_INVALID');
-      }
-      // COMMIT USER DATA
-      commit('LOG_IN_SUCCESS');
-      commit('SET_GUID', data.user.guid);
-      commit('SET_EMAIL', data.user.email);
-      // DISPATCH COLLECTION SYNC ACTION
-      // This creates the new user's collection document
-      dispatch('collection/syncWithDb');
-    } catch (err) {
-      commit('LOG_IN_FAILED');
-      commit('CLEAR_USER');
-      console.error('Problem registering user!', err);
+  registerUser({ commit, dispatch }, { email, password }) {
+    if (!email || !password) {
+      throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
     }
-  },
 
-  refreshedAccessToken({ commit }, token) {
-    commit('SET_ACCESS_TOKEN', token);
+    this.$user.create(email, password, (ack) => {
+      if (ack.err) {
+        commit('LOG_IN_FAILED');
+        commit('CLEAR_USER');
+        console.error('Problem registering user!', ack.err);
+      } else {
+        dispatch('logInUser', { email, password });
+      }
+    });
   },
 };
 
@@ -85,7 +64,6 @@ export const mutations = {
   CLEAR_USER(state) {
     const clearUser = {
       email: '',
-      guid: '',
     };
     Vue.set(state, 'user', clearUser);
   },
@@ -104,9 +82,5 @@ export const mutations = {
 
   SET_EMAIL(state, email) {
     Vue.set(state.user, 'email', email);
-  },
-
-  SET_GUID(state, guid) {
-    Vue.set(state.user, 'guid', guid);
   },
 };

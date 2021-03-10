@@ -2,10 +2,6 @@
   <div>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="10">
-        <!-- <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div> -->
         <div class="text-center text-h3 white--text mt-md-10 mb-md-n2">
           Welcome to the Archive, Planeswalker.
         </div>
