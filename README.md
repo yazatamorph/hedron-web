@@ -1,6 +1,6 @@
 # Hedron
 
-Hedron is a collection management app for Magic: The Gathering, which I produced in my spare time as a way to teach myself Vue/Nuxt - and keep track of all the cardboard I've got stacked about. This repository, specifically, contains the client app. It consumes the [Scryfall](https://scryfall.com/) API to provide search functionality, card data, and card images, and user collection data is persisted within the client with assistance from [vuex-persist](https://github.com/championswimmer/vuex-persist) and [localforage](https://github.com/localForage/localForage). A deployed instance of Hedron is available at [https://hedronarchive.com/](https://hedronarchive.com/).
+Hedron is a collection management app for Magic: The Gathering, which I produced in my spare time as a way to teach myself Vue/Nuxt - and keep track of all the cardboard I've got stacked about. This repository, specifically, contains the client app. It consumes the [Scryfall](https://scryfall.com/) API to provide search functionality, card data, and card images. Otherwise, Hedron is pursuing an offline-first dApp model with user authentication, data persistence and synchronization provided by [GUN](https://github.com/amark/gun). A deployed instance of Hedron complete with a relay peer is available at [https://hedronarchive.com/](https://hedronarchive.com/), however I encourage you to run Hedron locally and/or with your own peers if you desire!
 
 ## Contributing
 
@@ -33,4 +33,4 @@ Hedron makes use of textual and visual information, including card text and imag
 
 Card data and images used by Hedron are provided courtesy of [Scryfall](https://scryfall.com/). Hedron is in no way produced by, endorsed by, supported by, or affiliated with Scryfall.
 
-All original content and functionality, such as it is, is licensed under the GNU General Public License v3.0.
+All original content and functionality, such as it is, is licensed under the GNU General Public License v3.0. All dependencies and bundled software are subject to their original licenses.

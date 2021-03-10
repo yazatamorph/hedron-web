@@ -127,21 +127,15 @@
       <v-list-item v-if="displayReset()" @click="handleResetFilters">
         <v-list-item-subtitle>Reset Filters</v-list-item-subtitle>
       </v-list-item>
-      <v-divider></v-divider>
-      <SyncButton />
     </v-list>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import SyncButton from '~/components/SyncButton';
 
 export default {
   name: 'SortingDrawer',
-  components: {
-    SyncButton,
-  },
   data() {
     return {
       colors: [

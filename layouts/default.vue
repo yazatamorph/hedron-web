@@ -13,16 +13,8 @@
       <v-btn v-if="loggedIn" color="white" text to="/collection"
         >Collection</v-btn
       >
-
       <v-spacer></v-spacer>
-      <!-- <v-menu offset-y bottom left :close-on-content-click="false">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template> -->
       <AccountDialogues />
-      <!-- </v-menu> -->
     </v-app-bar>
     <v-main class="bg-gradient">
       <v-container>
@@ -38,14 +30,11 @@
 <script>
 import { mapState } from 'vuex';
 import AccountDialogues from '~/components/AccountDialogues';
-// import AccountMenu from '~/components/AccountMenu';
 
 export default {
   components: {
     AccountDialogues,
-    // AccountMenu,
   },
-  middleware: 'storeRestored',
   data() {
     return {
       appBarSearch: '',
@@ -57,7 +46,6 @@ export default {
   computed: {
     ...mapState({
       loggedIn: (state) => state.loggedIn,
-      guid: (state) => state.user.guid,
     }),
   },
   methods: {
