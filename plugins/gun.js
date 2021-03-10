@@ -1,23 +1,15 @@
 import Gun from 'gun';
-// Disabling eslint warning about unused variable
-// because it's required by GUN for auth
-// eslint-disable-next-line
-import SEA from 'gun/sea';
+import 'gun/sea';
+import 'gun/lib/radix';
+import 'gun/lib/radisk';
+import 'gun/lib/store';
+import store from 'gun/lib/rindexed';
 
 export default ({ app }, inject) => {
-  const gun = Gun('https://hedronarchive.com/gun');
-  // 'http://localhost:8765/gun',
-  // // Example of peers for production
-  // // ['https://hedronarchive.com/gun', 'http://localhost:8765/gun'],
-  // {
-  //   // S3 or other adapter will be used in production
-  //   // but only needs to be set on server
-  //   // s3: {
-  //   //   key: '',
-  //   //   secret: '',
-  //   //   bucket: '',
-  //   // },
-  // }
+  const gun = Gun('https://hedronarchive.com/gun', {
+    store,
+    localStorage: false,
+  });
 
   inject('gun', gun);
   inject('user', gun.user().recall({ sessionStorage: true }));

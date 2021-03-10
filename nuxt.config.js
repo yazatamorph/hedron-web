@@ -40,21 +40,11 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     proxy: true,
-  },
-
-  proxy: {
-    '/api/account/': 'https://hedronarchive.com',
-    '/api/collection/': 'https://hedronarchive.com',
-    '/scry/': {
-      target: 'https://api.scryfall.com',
-      pathRewrite: { '^/scry/': '' },
-    },
   },
 
   // localForage module configuration
