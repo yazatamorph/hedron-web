@@ -11,7 +11,6 @@ export default ({ store }, inject) => {
     localStorage: false,
   });
 
-  console.log('STORE', store);
   const { dispatch } = store;
 
   gun.on('auth', () => {
