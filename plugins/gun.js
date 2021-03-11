@@ -3,12 +3,19 @@ import 'gun/sea';
 import 'gun/lib/radix';
 import 'gun/lib/radisk';
 import 'gun/lib/store';
-import store from 'gun/lib/rindexed';
+import rindexed from 'gun/lib/rindexed';
 
-export default ({ app }, inject) => {
+export default ({ store }, inject) => {
   const gun = Gun('https://hedronarchive.com/gun', {
-    store,
+    store: rindexed,
     localStorage: false,
+  });
+
+  console.log('STORE', store);
+  const { dispatch } = store;
+
+  gun.on('auth', () => {
+    dispatch('continueSession');
   });
 
   inject('gun', gun);
