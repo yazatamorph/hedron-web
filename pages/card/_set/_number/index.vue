@@ -69,6 +69,11 @@ export default {
       }
     },
   },
+  head() {
+    return {
+      title: this.card?.name,
+    };
+  },
   fetchOnServer: false,
 };
 </script>

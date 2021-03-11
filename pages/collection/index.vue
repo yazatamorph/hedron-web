@@ -216,5 +216,10 @@ export default {
       return a.set_name > b.set_name ? 1 : -1;
     },
   },
+  head() {
+    return {
+      title: 'Collection',
+    };
+  },
 };
 </script>

@@ -297,5 +297,10 @@ export default {
       return this.collectionCards[this.handleCardId(card)];
     },
   },
+  head() {
+    return {
+      title: 'Card Search',
+    };
+  },
 };
 </script>
