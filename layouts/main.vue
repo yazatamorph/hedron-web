@@ -68,7 +68,7 @@
         v-if="$vuetify.breakpoint.mdAndDown && $route.path !== '/'"
         v-slot:extension
       >
-        <v-btn icon color="white" @click="handleCollectMenu()"
+        <v-btn v-if="loggedIn" icon color="white" @click="handleCollectMenu()"
           ><v-icon>{{ icon.menu }}</v-icon></v-btn
         >
         <v-text-field
