@@ -19,7 +19,7 @@
           label="Search the Archive..."
           dark
           clearable
-          clear-icon="mdi-trash-can-outline"
+          :clear-icon="icon.trash"
           solo
           :flat="searchFlat"
           @focus="searchFlat = false"
@@ -42,13 +42,14 @@
 </template>
 
 <script>
-import { mdiHelpCircleOutline } from '@mdi/js';
+import { mdiHelpCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 export default {
   layout: 'main',
   data() {
     return {
       icon: {
         help: mdiHelpCircleOutline,
+        trash: mdiTrashCanOutline,
       },
       cardSearch: '',
       searchFlat: true,
