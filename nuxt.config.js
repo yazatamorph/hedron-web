@@ -7,11 +7,15 @@ export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     titleTemplate: '%s - Hedron',
-    title: 'Hedron - a collection manager for Magic: the Gathering',
+    title: 'Hedron - a collection manager for Magic: The Gathering',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Hedron - a collection manager for Magic: The Gathering',
+      },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
@@ -43,9 +47,7 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {
-    proxy: true,
-  },
+  axios: {},
 
   // localForage module configuration
   localforage: {

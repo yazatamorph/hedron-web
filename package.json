@@ -1,6 +1,6 @@
 {
   "name": "hedron-web",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "A collection management app for Magic: The Gathering.",
   "author": "Zareen Price",
   "license": "GPL-3.0-or-later",
@@ -32,6 +32,7 @@
     "text-encoding": "^0.7.0"
   },
   "devDependencies": {
+    "@mdi/js": "^5.9.55",
     "@nuxtjs/eslint-config": "^3.1.0",
     "@nuxtjs/eslint-module": "^2.0.0",
     "@nuxtjs/localforage": "^1.1.0",

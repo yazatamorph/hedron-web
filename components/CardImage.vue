@@ -11,7 +11,7 @@
             absolute
             style="opacity: 90%"
             @click="flip = !flip"
-            ><v-icon>mdi-rotate-left</v-icon></v-btn
+            ><v-icon>{{ icon.rotateLeft }}</v-icon></v-btn
           >
           <nuxt-link v-if="linkDest" :to="linkDest">
             <v-slide-x-reverse-transition mode="out-in">
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mdiRotateLeft } from '@mdi/js';
 export default {
   name: 'CardImage',
   props: {
@@ -74,6 +75,9 @@ export default {
   },
   data() {
     return {
+      icon: {
+        rotateLeft: mdiRotateLeft,
+      },
       flip: false,
     };
   },

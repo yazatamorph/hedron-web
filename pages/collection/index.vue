@@ -38,7 +38,7 @@
             :disabled="currentPage <= 1"
             :outlined="currentPage <= 1"
             @click="handlePages(1)"
-            ><v-icon>mdi-page-first</v-icon></v-btn
+            ><v-icon>{{ icon.pageFirst }}</v-icon></v-btn
           >
           <v-btn
             class="mx-1"
@@ -62,7 +62,7 @@
             :disabled="currentPage >= totalPages"
             :outlined="currentPage >= totalPages"
             @click="handlePages(totalPages)"
-            ><v-icon>mdi-page-last</v-icon></v-btn
+            ><v-icon>{{ icon.pageLast }}</v-icon></v-btn
           >
         </v-col>
       </v-row>
@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { mdiPageFirst, mdiPageLast } from '@mdi/js';
 import { mapState } from 'vuex';
 import CardImage from '~/components/CardImage';
 
@@ -81,6 +82,10 @@ export default {
   },
   data() {
     return {
+      icon: {
+        pageFirst: mdiPageFirst,
+        pageLast: mdiPageLast,
+      },
       currentPage: 1,
       totalPages: 1,
       totalCards: null,
@@ -215,6 +220,11 @@ export default {
       }
       return a.set_name > b.set_name ? 1 : -1;
     },
+  },
+  head() {
+    return {
+      title: 'Collection',
+    };
   },
 };
 </script>

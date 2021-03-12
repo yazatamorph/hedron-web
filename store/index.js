@@ -10,6 +10,12 @@ export const state = () => ({
 export const getters = {};
 
 export const actions = {
+  continueSession({ commit, dispatch }) {
+    if (this.$user.is) {
+      commit('LOG_IN_SUCCESS');
+      dispatch('collection/dbSubscribe');
+    }
+  },
   logInUser({ commit, dispatch }, { email, password }) {
     if (!email || !password) {
       throw new Error('LOGIN_CREDENTIALS_INCOMPLETE');
