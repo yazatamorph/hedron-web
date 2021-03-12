@@ -43,7 +43,7 @@
         label="Search the Archive..."
         dark
         clearable
-        clear-icon="mdi-trash-can-outline"
+        :clear-icon="icon.trash"
         solo
         dense
         hide-details
@@ -77,7 +77,7 @@
           label="Search the Archive..."
           dark
           clearable
-          clear-icon="mdi-trash-can-outline"
+          :clear-icon="icon.trash"
           solo
           dense
           hide-details
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { mdiMenu, mdiHelpCircleOutline } from '@mdi/js';
+import { mdiMenu, mdiHelpCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { mapState } from 'vuex';
 import AccountDialogues from '~/components/AccountDialogues';
 import SortingDrawer from '~/components/SortingDrawer';
@@ -125,6 +125,7 @@ export default {
       icon: {
         help: mdiHelpCircleOutline,
         menu: mdiMenu,
+        trash: mdiTrashCanOutline,
       },
       appBarSearch: '',
       collectOpts: true,
