@@ -54,7 +54,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon>mdi-chevron-up</v-icon>
+                  <v-icon>{{ icon.chevronUp }}</v-icon>
                 </v-btn>
               </template>
               <v-list dense>
@@ -105,7 +105,7 @@
           :disabled="currentPage === 1"
           :outlined="currentPage === 1"
           @click="makePages(1)"
-          ><v-icon>mdi-page-first</v-icon></v-btn
+          ><v-icon>{{ icon.pageFirst }}</v-icon></v-btn
         >
         <v-btn
           class="mx-1"
@@ -129,7 +129,7 @@
           :disabled="currentPage >= totalPages"
           :outlined="currentPage >= totalPages"
           @click="makePages(totalPages)"
-          ><v-icon>mdi-page-last</v-icon></v-btn
+          ><v-icon>{{ icon.pageLast }}</v-icon></v-btn
         >
       </v-col>
     </v-row>
@@ -137,6 +137,7 @@
 </template>
 
 <script>
+import { mdiChevronUp, mdiPageFirst, mdiPageLast } from '@mdi/js';
 import { mapActions, mapState } from 'vuex';
 import replace from 'lodash/replace';
 import CardImage from '~/components/CardImage';
@@ -154,6 +155,11 @@ export default {
   },
   data() {
     return {
+      icon: {
+        chevronUp: mdiChevronUp,
+        pageFirst: mdiPageFirst,
+        pageLast: mdiPageLast,
+      },
       results: [],
       displayedResults: [],
       totalCards: null,

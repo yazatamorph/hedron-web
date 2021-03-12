@@ -27,7 +27,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="grey darken-4" dark block v-bind="attrs" v-on="on">
                 Printings
-                <v-icon right>mdi-menu-down</v-icon>
+                <v-icon right>{{ icon.menuDown }}</v-icon>
               </v-btn>
             </template>
             <v-list>
@@ -84,6 +84,7 @@
 
 <script>
 import _ from 'lodash';
+import { mdiMenuDown } from '@mdi/js';
 import CardImage from './CardImage';
 import CollectionPanel from './CollectionPanel';
 
@@ -110,6 +111,13 @@ export default {
       },
     },
     setSymbol: { type: String, required: true, default: '' },
+  },
+  data() {
+    return {
+      icon: {
+        menuDown: mdiMenuDown,
+      },
+    };
   },
   methods: {
     makeImgAlt() {

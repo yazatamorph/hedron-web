@@ -5,7 +5,7 @@
         <v-list-item-content>
           <v-list-item-title>Collection</v-list-item-title>
         </v-list-item-content>
-        <v-icon>mdi-cards</v-icon>
+        <v-icon>{{ icon.cards }}</v-icon>
       </v-list-item>
       <v-divider></v-divider>
 
@@ -132,12 +132,16 @@
 </template>
 
 <script>
+import { mdiCards } from '@mdi/js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'SortingDrawer',
   data() {
     return {
+      icon: {
+        cards: mdiCards,
+      },
       colors: [
         ['White', 'white'],
         ['Blue', 'light-blue darken-1'],

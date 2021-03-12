@@ -26,6 +26,15 @@
           @blur="searchFlat = true"
           @keydown.enter="handleSearch"
         >
+          <template v-slot:append>
+            <v-btn
+              icon
+              plain
+              color="white"
+              href="https://scryfall.com/docs/syntax"
+              ><v-icon>{{ icon.help }}</v-icon></v-btn
+            >
+          </template>
         </v-text-field>
       </v-col>
     </v-row>
@@ -33,9 +42,14 @@
 </template>
 
 <script>
+import { mdiHelpCircleOutline } from '@mdi/js';
 export default {
+  layout: 'main',
   data() {
     return {
+      icon: {
+        help: mdiHelpCircleOutline,
+      },
       cardSearch: '',
       searchFlat: true,
     };

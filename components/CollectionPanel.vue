@@ -65,7 +65,7 @@
                           :disabled="!card.own"
                           @click="handleQuantity(con, 'add')"
                         >
-                          <v-icon>mdi-plus</v-icon>
+                          <v-icon>{{ icon.plus }}</v-icon>
                         </v-btn>
                       </template>
                       <template v-slot:append>
@@ -74,7 +74,7 @@
                           :disabled="!card.own"
                           @click="handleQuantity(con, 'subtract')"
                         >
-                          <v-icon>mdi-minus</v-icon>
+                          <v-icon>{{ icon.minus }}</v-icon>
                         </v-btn>
                       </template>
                     </v-text-field>
@@ -132,7 +132,7 @@
                           :disabled="!card.own"
                           @click="handleQuantity(con, 'add')"
                         >
-                          <v-icon>mdi-plus</v-icon>
+                          <v-icon>{{ icon.plus }}</v-icon>
                         </v-btn>
                       </template>
                       <template v-slot:append>
@@ -141,7 +141,7 @@
                           :disabled="!card.own"
                           @click="handleQuantity(con, 'subtract')"
                         >
-                          <v-icon>mdi-minus</v-icon>
+                          <v-icon>{{ icon.minus }}</v-icon>
                         </v-btn>
                       </template>
                     </v-text-field>
@@ -217,6 +217,7 @@
 </template>
 
 <script>
+import { mdiPlus, mdiMinus } from '@mdi/js';
 import { mapActions, mapState } from 'vuex';
 import debounce from 'lodash/debounce';
 
@@ -249,6 +250,10 @@ export default {
         { hpf: 'Heavily Played' },
         { dmgf: 'Damaged' },
       ],
+      icon: {
+        plus: mdiPlus,
+        minus: mdiMinus,
+      },
       rules: {
         quantity: (value) =>
           (Number.isInteger(parseInt(value)) && parseInt(value) >= 0) ||
