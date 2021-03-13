@@ -58,7 +58,7 @@ export default {
   // PWA module configuration
   pwa: {
     meta: {
-      appleStatusBarStyle: 'black-translucent',
+      appleStatusBarStyle: 'black',
       name: 'Hedron',
       author: 'Zareen Price',
       theme_color: 'hsla(192, 50%, 15%, 1)',
@@ -70,6 +70,11 @@ export default {
       name: 'Hedron',
       short_name: 'Hedron',
       background_color: 'hsla(192, 50%, 15%, 1)',
+    },
+    workbox: {
+      cacheOptions: {
+        revision: '0.3.6',
+      },
     },
   },
 
