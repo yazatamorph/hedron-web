@@ -55,6 +55,24 @@ export default {
     storeName: 'hedronCollection',
   },
 
+  // PWA module configuration
+  pwa: {
+    meta: {
+      appleStatusBarStyle: 'black-translucent',
+      name: 'Hedron',
+      author: 'Zareen Price',
+      theme_color: 'hsla(192, 50%, 15%, 1)',
+      ogHost: 'hedronarchive.com',
+      ogImage: true,
+      nativeUI: false,
+    },
+    manifest: {
+      name: 'Hedron',
+      short_name: 'Hedron',
+      background_color: 'hsla(192, 50%, 15%, 1)',
+    },
+  },
+
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
