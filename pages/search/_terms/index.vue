@@ -41,7 +41,6 @@
             <v-menu
               offset-y
               transition="slide-y-reverse-transition"
-              open-on-hover
               :close-on-content-click="false"
               top
             >
@@ -54,7 +53,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon>{{ icon.chevronUp }}</v-icon>
+                  Quick Actions<v-icon right>{{ icon.chevronUp }}</v-icon>
                 </v-btn>
               </template>
               <v-list dense>
