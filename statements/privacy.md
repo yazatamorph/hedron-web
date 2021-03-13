@@ -1,6 +1,6 @@
 # Privacy
 
-Hedron's team is committed to collecting as little information about you as possible, and what little we collect is never sold or shared. Your information is only used to provide the app's functionality - nothing more, nothing less.
+Hedron's team is committed to collecting as little information about you as possible, and what we collect is never sold or shared. Your information is only used to provide the app's functionality - nothing more, nothing less.
 
 So, what do we collect?
 
