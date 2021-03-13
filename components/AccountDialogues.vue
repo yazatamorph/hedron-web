@@ -124,6 +124,20 @@
                   </v-row>
                 </v-container>
               </v-card-text>
+              <v-card-text class="text-right text-body-2"
+                >By registering, you agree to our
+                <a
+                  class="grey--text text--lighten-5"
+                  href="https://hedronarchive.com/terms"
+                  >Terms of Service</a
+                >
+                and
+                <a
+                  class="grey--text text--lighten-5"
+                  href="https://hedronarchive.com/privacy"
+                  >Privacy Policy</a
+                >.</v-card-text
+              >
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="red" text @click="handleCloseButton">
