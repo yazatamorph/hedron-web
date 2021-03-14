@@ -234,7 +234,14 @@ export default {
     },
 
     handleLogout() {
+      if (this.loginShow) {
+        this.loginShow = false;
+      }
+      if (this.registerShow) {
+        this.registerShow = false;
+      }
       this.logOutUser();
+      this.$router.push('/');
     },
 
     handleRegister() {

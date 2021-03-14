@@ -22,11 +22,12 @@
       >We use your email address to allow you to access your account and to
       provide support services. It's never shared or publicly visible, and we'll
       only use it to contact you regarding your account - for example, to
-      confirm account creation or if you request a password reset. Likewise, the
-      data you provide about your card collection is not shared. We do our best
-      to mitigate the possibility of your data being accessed without your
-      authorization by enforcing secure connections with HTTPS and WSS, as well
-      as implementing security features like CSP and HSTS.</v-card-text
+      confirm account creation or to reply to your contact form submissions.
+      Likewise, the data you provide about your card collection is not shared.
+      We do our best to mitigate the possibility of your data being accessed
+      without your authorization by enforcing secure connections with HTTPS and
+      WSS, as well as implementing security features like CSP and
+      HSTS.</v-card-text
     >
     <v-card-text
       >Hedron doesn't use cookies to provide services. Instead, user identity
