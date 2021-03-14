@@ -54,12 +54,18 @@ export const actions = {
       throw new Error('REGISTER_CREDENTIALS_INCOMPLETE');
     }
 
-    this.$user.create(email, password, (ack) => {
+    this.$user.create(email, password, async (ack) => {
       if (ack.err) {
         commit('LOG_IN_FAILED');
         commit('CLEAR_USER');
         console.error('Problem registering user!', ack.err);
       } else {
+        await this.$axios.$post(
+          'https://hedronarchive.com/api/contact/register',
+          {
+            email,
+          }
+        );
         dispatch('logInUser', { email, password });
       }
     });
