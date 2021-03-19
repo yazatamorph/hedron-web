@@ -98,6 +98,7 @@ export default {
       filterRootState: (state) => state.filters,
       filterOwnState: (state) => state.filters.own,
       filterWishState: (state) => state.filters.wish,
+      filterNameState: (state) => state.filters.name,
       filterRarityState: (state) => state.filters.rarity,
       filterSetsState: (state) => state.filters.sets,
       filterColorsState: (state) => state.filters.colors,
@@ -141,6 +142,9 @@ export default {
       if (this.filterTagsState.length) {
         collection = this.filteredByTags(collection);
       }
+      if (this.filterNameState) {
+        collection = this.filteredByName(collection);
+      }
       // 3) calculates total number of filtered cards & pages
       this.totalCards = collection.length;
       this.totalPages = Math.ceil(this.totalCards / 20);
@@ -159,6 +163,10 @@ export default {
       return this.filterWishState
         ? collection.filter((card) => card.wish)
         : collection.filter((card) => card.own);
+    },
+    filteredByName(collection) {
+      const regex = new RegExp(this.filterNameState, 'gi');
+      return collection.filter((card) => card.name.match(regex));
     },
     filteredBySet(collection) {
       return collection.filter((card) => card.set === this.filterSetsState);
