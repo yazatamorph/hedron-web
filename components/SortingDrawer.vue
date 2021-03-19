@@ -10,8 +10,20 @@
       <v-divider></v-divider>
 
       <v-list-item-group active-class="white--text">
-        <v-list-item @click="handleWishFilter">
+        <v-list-item :input-value="!filterOwnState" @click="handleWishFilter">
           <v-list-item-subtitle>Wishlist</v-list-item-subtitle>
+        </v-list-item>
+      </v-list-item-group>
+
+      <v-list-item-group>
+        <v-list-item :input-value="!!cardNameInput">
+          <v-text-field
+            v-model="cardNameInput"
+            label="Filter by name..."
+            single-line
+            dense
+            clearable
+          ></v-text-field>
         </v-list-item>
       </v-list-item-group>
 
@@ -134,6 +146,7 @@
 <script>
 import { mdiCards } from '@mdi/js';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import debounce from 'lodash/debounce';
 
 export default {
   name: 'SortingDrawer',
@@ -150,6 +163,7 @@ export default {
         ['Green', 'green darken-1'],
         ['Colorless', 'grey lighten-1'],
       ],
+      cardNameInput: '',
       checkColor: [],
       checkRarity: [],
       chipTags: [],
@@ -161,6 +175,7 @@ export default {
         ['Uncommon', 'grey lighten-2'],
         ['Common', 'grey darken-1'],
       ],
+      debounceNameFilter: debounce(this.handleNameFilter, 500),
     };
   },
   computed: {
@@ -168,6 +183,7 @@ export default {
     ...mapState('collection', {
       filterOwnState: (state) => state.filters.own,
       filterWishState: (state) => state.filters.wish,
+      filterNameState: (state) => state.filters.name,
       filterSetsState: (state) => state.filters.sets,
       filterRarityState: (state) => state.filters.rarity,
       filterColorsState: (state) => state.filters.colors,
@@ -175,10 +191,18 @@ export default {
       filterTagsState: (state) => state.filters.tags,
     }),
   },
+  watch: {
+    cardNameInput: {
+      handler() {
+        this.debounceNameFilter();
+      },
+    },
+  },
   methods: {
     ...mapActions('collection', [
       'filterCMC',
       'filterColor',
+      'filterName',
       'filterOwn',
       'filterRarity',
       'filterSet',
@@ -201,6 +225,9 @@ export default {
     handleColorFilter(color) {
       this.filterColor({ color });
     },
+    handleNameFilter() {
+      this.filterName(this.cardNameInput);
+    },
     handleRarityFilter(rarity) {
       this.filterRarity({ rarity });
     },
@@ -215,6 +242,7 @@ export default {
       if (this.$refs.selectCMC) {
         this.$refs.selectCMC.reset();
       }
+      this.cardNameInput = '';
       this.checkColor = [];
       this.checkRarity = [];
       this.chipTags = [];
@@ -223,6 +251,7 @@ export default {
       if (
         !this.filterOwnState ||
         this.filterWishState ||
+        this.filterNameState ||
         this.filterSetsState ||
         this.filterRarityState.length ||
         this.filterColorsState.length ||

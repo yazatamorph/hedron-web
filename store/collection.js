@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy';
 export const state = () => ({
   cards: {},
   filters: {
+    name: '',
     own: true,
     wish: false,
     sets: '',
@@ -206,6 +207,10 @@ export const actions = {
     }
   },
 
+  filterName({ commit }, text) {
+    commit('FILTER_NAME', text);
+  },
+
   filterOwn({ commit }) {
     commit('FILTER_OWN');
   },
@@ -287,6 +292,10 @@ export const mutations = {
     state.filters.colors.splice(i, 1);
   },
 
+  FILTER_NAME(state, text) {
+    Vue.set(state.filters, 'name', text);
+  },
+
   FILTER_RARITY_ADD(state, rarity) {
     Vue.set(state.filters, 'rarity', [...state.filters.rarity, rarity]);
   },
@@ -297,6 +306,7 @@ export const mutations = {
   },
 
   FILTER_RESET_ALL(state) {
+    Vue.set(state.filters, 'name', '');
     Vue.set(state.filters, 'own', true);
     Vue.set(state.filters, 'wish', false);
     Vue.set(state.filters, 'sets', '');
