@@ -38,26 +38,9 @@
         />
         <v-row>
           <v-col cols="12">
-            <v-menu
-              offset-y
-              transition="slide-y-reverse-transition"
-              :close-on-content-click="false"
-              top
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="grey darken-4"
-                  dark
-                  block
-                  depressed
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  Quick Actions<v-icon right>{{ icon.chevronUp }}</v-icon>
-                </v-btn>
-              </template>
+            <v-card dark>
               <v-list dense>
-                <v-list-item dense class="mb-n5">
+                <v-list-item dense class="mt-n2 mb-n5">
                   <v-list-item-title>{{ result.name }}</v-list-item-title>
                 </v-list-item>
                 <v-list-item dense>
@@ -66,7 +49,7 @@
                     {{ result.collector_number }}</v-list-item-subtitle
                   >
                 </v-list-item>
-                <v-list-item dense>
+                <v-list-item dense class="d-flex justify-space-between my-n4">
                   <v-switch
                     :input-value="
                       collectionCards[handleCardId(result)]
@@ -74,11 +57,12 @@
                         : false
                     "
                     color="teal accent-4"
-                    label="Owned"
                     @change="handleOwn(result)"
-                  ></v-switch>
-                </v-list-item>
-                <v-list-item dense>
+                  >
+                    <template v-slot:label>
+                      <v-icon right>{{ icon.collection }}</v-icon>
+                    </template>
+                  </v-switch>
                   <v-switch
                     :input-value="
                       collectionCards[handleCardId(result)]
@@ -86,12 +70,15 @@
                         : false
                     "
                     color="teal accent-4"
-                    label="Wishlist"
                     @change="handleWish(result)"
-                  ></v-switch>
+                  >
+                    <template v-slot:label>
+                      <v-icon right>{{ icon.wishlist }}</v-icon>
+                    </template></v-switch
+                  >
                 </v-list-item>
               </v-list>
-            </v-menu>
+            </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -136,7 +123,13 @@
 </template>
 
 <script>
-import { mdiChevronUp, mdiPageFirst, mdiPageLast } from '@mdi/js';
+import {
+  mdiCards,
+  mdiClipboardList,
+  mdiChevronUp,
+  mdiPageFirst,
+  mdiPageLast,
+} from '@mdi/js';
 import { mapActions, mapState } from 'vuex';
 import replace from 'lodash/replace';
 import CardImage from '~/components/CardImage';
@@ -156,8 +149,10 @@ export default {
     return {
       icon: {
         chevronUp: mdiChevronUp,
+        collection: mdiCards,
         pageFirst: mdiPageFirst,
         pageLast: mdiPageLast,
+        wishlist: mdiClipboardList,
       },
       results: [],
       displayedResults: [],
