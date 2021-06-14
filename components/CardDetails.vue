@@ -107,6 +107,11 @@
             <v-list-item-title>{{ makePrintingInfo() }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item class="my-n2">
+          <v-btn outlined small :href="card.scryfall_uri"
+            >See full details on Scryfall</v-btn
+          >
+        </v-list-item>
         <CollectionPanel :card-id="cardId" :card-data="card" />
       </v-sheet>
     </v-col>
