@@ -19,9 +19,40 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
+        <v-col v-if="prints && prints.length" cols="12">
+          <v-card v-if="$vuetify.breakpoint.lgAndUp">
+            <v-list>
+              <v-list-item>
+                <v-list-item-title>Printings</v-list-item-title>
+              </v-list-item>
+              <v-virtual-scroll
+                bench="5"
+                :items="prints"
+                max-height="200"
+                :item-height="40"
+              >
+                <template v-slot:default="{ item }">
+                  <v-list-item dense>
+                    <v-list-item-content>
+                      <nuxt-link
+                        :to="`/card/${item.set}/${item.collector_number}`"
+                        style="display: inline-block; text-decoration: none"
+                      >
+                        <v-list-item-subtitle>
+                          {{ `${item.set_name} #${item.collector_number}` }}
+                        </v-list-item-subtitle>
+                      </nuxt-link>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider
+                    v-if="prints.indexOf(item) < prints.length - 1"
+                  ></v-divider>
+                </template>
+              </v-virtual-scroll>
+            </v-list>
+          </v-card>
           <v-menu
-            v-if="prints && prints.length"
+            v-else-if="$vuetify.breakpoint.mdAndDown"
             transition="scroll-y-transition"
           >
             <template v-slot:activator="{ on, attrs }">
