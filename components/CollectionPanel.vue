@@ -31,9 +31,17 @@
           >
             <v-card v-if="cardData.nonfoil">
               <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
-                <v-card-title class="text-h6 mt-n2 mb-n2"
-                  >Non-Foil</v-card-title
-                >
+                <v-col>
+                  <v-card-title class="text-h6 mt-n2 mb-n2"
+                    >Non-Foil</v-card-title
+                  >
+                </v-col>
+                <v-col>
+                  <v-card-subtitle
+                    >Estimated Value:
+                    <strong>${{ cardData.prices.usd }}</strong></v-card-subtitle
+                  >
+                </v-col>
               </v-row>
               <v-row class="d-flex flex-wrap justify-space-around">
                 <v-col
@@ -100,7 +108,17 @@
           >
             <v-card v-if="cardData.foil">
               <v-row class="d-flex flex-wrap justify-space-around" no-gutters>
-                <v-card-title class="text-h6 mt-n2 mb-n2">Foil</v-card-title>
+                <v-col>
+                  <v-card-title class="text-h6 mt-n2 mb-n2">Foil</v-card-title>
+                </v-col>
+                <v-col>
+                  <v-card-subtitle
+                    >Estimated Value:
+                    <strong
+                      >${{ cardData.prices.usd_foil }}</strong
+                    ></v-card-subtitle
+                  >
+                </v-col>
               </v-row>
               <v-row class="d-flex flex-wrap justify-space-around">
                 <v-col

@@ -127,13 +127,15 @@
                 Coast or its parent company.
                 <br />
                 <br />
-                Card data and images used by Hedron are provided courtesy of
+                Card data, price estimates, and images used by Hedron are
+                provided courtesy of
                 <a
                   class="grey--text text--lighten-2 text-decoration-none"
                   href="https://scryfall.com"
                   >Scryfall</a
                 >. Hedron is in no way produced by, endorsed by, supported by,
-                or affiliated with Scryfall.
+                or affiliated with Scryfall. Any listed prices are estimates
+                only and should not be taken as guarantees in any form.
                 <br />
                 <br />
                 The GitHub logo is copyright
