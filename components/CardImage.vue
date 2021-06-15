@@ -5,6 +5,7 @@
         <div v-if="imageSource && imageSource.length > 1">
           <v-btn
             class="ma-2 fab-opacity"
+            elevation="24"
             fab
             :dark="!hover"
             absolute
@@ -16,7 +17,7 @@
               <v-img
                 :key="flip ? imageSource[1] : imageSource[0]"
                 class="rounded-card transition-swing"
-                :class="`elevation-${hover ? 24 : 10}`"
+                :class="`elevation-${hover ? 23 : 10}`"
                 :src="flip ? imageSource[1] : imageSource[0]"
                 :alt="altText"
               >
@@ -27,7 +28,7 @@
             <v-img
               :key="flip ? imageSource[1] : imageSource[0]"
               class="rounded-card transition-swing"
-              :class="`elevation-${hover ? 24 : 10}`"
+              :class="`elevation-${hover ? 23 : 10}`"
               :src="flip ? imageSource[1] : imageSource[0]"
               :alt="altText"
             >
@@ -38,7 +39,7 @@
           <nuxt-link v-if="linkDest" :to="linkDest">
             <v-img
               class="rounded-card transition-swing"
-              :class="`elevation-${hover ? 24 : 10}`"
+              :class="`elevation-${hover ? 23 : 10}`"
               :src="imageSource[0]"
               :alt="altText"
             ></v-img>
@@ -46,7 +47,7 @@
           <v-img
             v-else
             class="rounded-card transition-swing"
-            :class="`elevation-${hover ? 24 : 10}`"
+            :class="`elevation-${hover ? 23 : 10}`"
             :src="imageSource[0]"
             :alt="altText"
           ></v-img>
