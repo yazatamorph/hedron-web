@@ -4,12 +4,10 @@
       <template v-slot:default="{ hover }">
         <div v-if="imageSource && imageSource.length > 1">
           <v-btn
-            class="ma-2"
-            elevation="26"
+            class="ma-2 fab-opacity"
             fab
-            dark
+            :dark="!hover"
             absolute
-            :class="hover ? `fabHoverOn` : `fabHoverOff`"
             @click="flip = !flip"
             ><v-icon>{{ icon.rotateLeft }}</v-icon></v-btn
           >
@@ -92,11 +90,7 @@ export default {
   border-radius: 4.75% / 3.5%;
 }
 
-.fabHoverOff {
-  opacity: 50%;
-}
-
-.fabHoverOn {
-  opacity: 95%;
+.fab-opacity {
+  opacity: 85%;
 }
 </style>
