@@ -7,7 +7,7 @@
             class="ma-2 fab-opacity"
             elevation="24"
             fab
-            :dark="!hover"
+            dark
             absolute
             @click="flip = !flip"
             ><v-icon>{{ icon.rotateLeft }}</v-icon></v-btn
