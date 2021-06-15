@@ -91,6 +91,6 @@ export default {
 }
 
 .fab-opacity {
-  opacity: 85%;
+  opacity: 80%;
 }
 </style>
