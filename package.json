@@ -28,7 +28,7 @@
     "gun": "^0.2020.520",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
-    "nuxt": "^2.15.4",
+    "nuxt": "^3.10.0",
     "text-encoding": "^0.7.0"
   },
   "devDependencies": {
